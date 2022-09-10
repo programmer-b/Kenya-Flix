@@ -1,0 +1,2 @@
+json_key_file("/home/dante/client_secret_576013243757-dunvg7ln06plliqi8u6fftb30u76u3m5.apps.googleusercontent.com.json") # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
+package_name("com.dantech.kenyaflix") # e.g. com.krausefx.app
