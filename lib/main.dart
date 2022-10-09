@@ -1,5 +1,6 @@
+import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
-import 'package:kenyaflix/Provider/KFVideoProvider.dart';
+import 'package:kenyaflix/Provider/KFProvider.dart';
 import 'package:kenyaflix/Screens/KFVideoPlayerScreen.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
@@ -14,27 +15,24 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context) => KFVideoProvider()),
-
-      ],
+    return ChangeNotifierProvider(
+      create: (context) => KFProvider(),
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.blue,
           brightness: Brightness.dark,
         ),
-        home: const MyHomePage(title: 'Flutter Demo Home Page'),
+        home: const MyHomePage(),
       ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({super.key,});
 
-  final String title;
+  
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -43,26 +41,32 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final videoPlayerProvider = Provider.of<KFVideoProvider>(context);
+    BetterPlayerDataSource betterPlayerDataSource = BetterPlayerDataSource(
+        BetterPlayerDataSourceType.network,
+        // "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+        "https://go.wootly.ch/dash?source=web&id=2a433898c7c06921cd1aff16fa2f21b29c48e58a&sig=3DehfA6E6M55Jr-0BSKPCw&expire=1665326813&ofs=11&usr=170024"
+        );
     return Scaffold(
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () => videoPlayerProvider.launchVideoPlayerScreen(context),
-          child: const Text('Play a video'),
-        ),
+      appBar: AppBar(
+        title: const Text("Flutter better player example"),
       ),
+      body: Center(
+          child: ElevatedButton(
+              onPressed: () => KFVideoPlayerScreen(
+                title: 'Better player example',
+                      betterPlayerDataSource: betterPlayerDataSource, goBackWidget: const MyHomePage(),)
+                  .launch(context),
+              child: const Text('Play video'))),
     );
   }
 }
