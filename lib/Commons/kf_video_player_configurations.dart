@@ -1,6 +1,5 @@
 import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 BetterPlayerConfiguration betterPlayerConfiguration(context) {
   return const BetterPlayerConfiguration(
@@ -12,13 +11,11 @@ BetterPlayerConfiguration betterPlayerConfiguration(context) {
       autoDetectFullscreenDeviceOrientation: true,
       allowedScreenSleep: false,
       useRootNavigator: true,
-      expandToFill: true,
-      
+      expandToFill: true,    
       controlsConfiguration: BetterPlayerControlsConfiguration(
           playerTheme: BetterPlayerTheme.cupertino,
           progressBarPlayedColor: Colors.red,
           showControlsOnInitialize: true,enableFullscreen: true,
           enablePip: true,
-          
           ));
 }

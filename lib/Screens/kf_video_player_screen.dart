@@ -1,19 +1,16 @@
-import 'dart:developer';
 
 import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart' hide log;
-import 'package:kenyaflix/Commons/KFVideoPlayerConfigurations.dart';
+import 'package:kenyaflix/Commons/kf_video_player_configurations.dart';
 
 class KFVideoPlayerScreen extends StatefulWidget {
   const KFVideoPlayerScreen(
       {Key? key,
       required this.betterPlayerDataSource,
-      required this.goBackWidget,
       required this.title})
       : super(key: key);
   final BetterPlayerDataSource betterPlayerDataSource;
-  final Widget goBackWidget;
   final String title;
 
   @override
