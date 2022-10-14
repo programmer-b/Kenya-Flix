@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:kenyaflix/Commons/kf_strings.dart';
 import 'package:kenyaflix/Screens/kf_home_screen.dart';
 import 'package:nb_utils/nb_utils.dart' hide log;
+import 'package:provider/provider.dart';
+
+import '../Commons/kf_functions.dart';
+import '../Provider/kf_provider.dart';
 
 
 class KFSplashScreen extends StatefulWidget {
@@ -14,6 +18,18 @@ class KFSplashScreen extends StatefulWidget {
 }
 
 class _KFSplashScreenState extends State<KFSplashScreen> {
+   @override
+  void initState() {
+    super.initState();
+   
+    init();
+  }
+
+  Future<void> init() async {
+    final provider = context.read<KFProvider>();
+    await fetchDataAndStoreData(provider);
+  }
+
 
   Future<void> _ready() async {
     await 3.seconds.delay;

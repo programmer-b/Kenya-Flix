@@ -8,6 +8,22 @@ const kfAppLogoAsset = "assets/images/kenya_flix_logo.png";
 const kfMoviesBaseUrl = "https://www.goojara.to/watch-movies";
 const kfSeriesBaseUrl = "https://www.goojara.to/watch-series";
 
+const List<Map<String, dynamic>> trendingNowMovies = [
+  {
+    "display_title": "Trending Now On $kfAppName",
+    "id": 54,
+    "url": kfMoviesBaseUrl
+  }
+];
+
+const List<Map<String, dynamic>> trendingNowSeries = [
+  {
+    "display_title": "Trending Now On $kfAppName",
+    "id": 55,
+    "url": kfSeriesBaseUrl
+  }
+];
+
 const List<Map<String, dynamic>> movies = [
   {
     "display_title": "Action",
@@ -241,7 +257,6 @@ const List<Map<String, dynamic>> series = [
     "url": "$kfSeriesBaseUrl-genre-Fantasy",
     "id": 36
   },
-
   {
     "display_title": "Game-Show",
     "genre": "game-show",
@@ -267,22 +282,10 @@ const List<Map<String, dynamic>> series = [
     "id": 41
   },
   {
-    "display_title": "Musical",
-    "genre": "musical",
-    "url": "$kfSeriesBaseUrl-genre-Musical",
-    "id": 42
-  },
-  {
     "display_title": "Mystery",
     "genre": "mystery",
     "url": "$kfSeriesBaseUrl-genre-News",
     "id": 43
-  },
-  {
-    "display_title": "News",
-    "genre": "news",
-    "url": "$kfSeriesBaseUrl-genre-News",
-    "id": 44
   },
   {
     "display_title": "Reality TV",
@@ -332,36 +335,45 @@ const List<Map<String, dynamic>> series = [
     "url": "$kfSeriesBaseUrl-genre-Western",
     "id": 52
   },
-
 ];
 
+final List<Map<String, String>> genres = [
+  {"name": 'Action', "path": "-genre-Action"},
+  {"name": 'Adventure', "path": "-genre-Adventure"},
+  {"name": 'Animation', "path": "-genre-Animation"},
+  {"name": 'Biography', "path": "-genre-Biography"},
+  {"name": 'Comedy', "path": "-genre-Comedy"},
+  {"name": 'Crime', "path": "-genre-Crime"},
+  {"name": 'Documentary', "path": "-genre-Documentary"},
+  {"name": 'Drama', "path": "-genre-Drama"},
+  {"name": 'Family', "path": "-genre-Family"},
+  {"name": 'Fantasy', "path": "-genre-Fantasy"},
+  {"name": 'Film-Noir', "path": "-genre-Film-Noir"},
+  {"name": 'Game-Show', "path": "-genre-Game-Show"},
+  {"name": 'History', "path": "-genre-History"},
+  {"name": 'Horror', "path": "-genre-Horror"},
+  {"name": 'Music', "path": "-genre-Music"},
+  {"name": 'Musical', "path": "-genre-Musical"},
+  {"name": 'Mystery', "path": "-genre-Mystery"},
+  {"name": 'News', "path": "-genre-News"},
+  {"name": 'Reality-TV', "path": "-genre-Reality-TV"},
+  {"name": 'Romance', "path": "-genre-Romance"},
+  {"name": 'Sci-Fi', "path": "-genre-Sci-Fi"},
+  {"name": 'Sport', "path": "-genre-Sport"},
+  {"name": 'Talk-Show', "path": "-genre-Talk-Show"},
+  {"name": 'Thriller', "path": "-genre-Thriller"},
+  {"name": 'War', "path": "-genre-War"},
+  {"name": 'Western', "path": "-genre-Western"},
+  {"name": 'Adult', "path": "-genre-Adult"}
+];
 
-  final List<String> genres = [
-    'Action',
-    'Adventure',
-    'Animation',
-    'Biography',
-    'Comedy',
-    'Crime',
-    'Documentary',
-    'Drama',
-    'Family',
-    'Fantasy',
-    'Film-Noir',
-    'Game-Show',
-    'History',
-    'Horror',
-    'Music',
-    'Musical',
-    'Mystery',
-    'News',
-    'Reality-TV',
-    'Romance',
-    'Sci-Fi',
-    'Sport',
-    'Talk-Show',
-    'Thriller',
-    'War',
-    'Western',
-    'Adult'
-  ];
+final List<Map<String, String>> category = [
+  {
+    "name": "Movies",
+    "url": kfMoviesBaseUrl,
+  },
+  {
+    "name": "Series",
+    "url": kfSeriesBaseUrl,
+  }
+];

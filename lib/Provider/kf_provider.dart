@@ -39,7 +39,7 @@ class KFProvider with ChangeNotifier {
     var recentTitleImages =
         document.getElementsByClassName('dflex')[0].children;
     for (int i = 0; i < recentTitleImages.length; i++) {
-       _moviesTopCarouselUrls.insert(
+      _moviesTopCarouselUrls.insert(
           i,
           recentTitleImages[i]
               .getElementsByTagName('img')[0]
@@ -53,12 +53,10 @@ class KFProvider with ChangeNotifier {
     notifyListeners();
   }
 
-
-
-  List<String> _moviesTopCarouselUrls = [];
+  final List<String> _moviesTopCarouselUrls = [];
   List<String> get moviesTopCarouselUrls => _moviesTopCarouselUrls;
 
-  List<String> _seriesTopCarouselUrls = [];
+  final List<String> _seriesTopCarouselUrls = [];
   List<String> get seriesTopCarouselUrls => _seriesTopCarouselUrls;
 
   bool _contentLoadError = false;

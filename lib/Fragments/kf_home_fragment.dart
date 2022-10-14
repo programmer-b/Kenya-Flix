@@ -4,9 +4,7 @@ import 'package:kenyaflix/Commons/kf_menus.dart';
 import 'package:kenyaflix/Components/kf_app_bar_menu_component.dart';
 import 'package:kenyaflix/Components/kf_error_screen_component.dart';
 import 'package:kenyaflix/Provider/kf_provider.dart';
-import 'package:kenyaflix/Utils/kf_utils.dart';
 import 'package:provider/provider.dart';
-
 
 class KFHomeFragment extends StatefulWidget {
   const KFHomeFragment({Key? key}) : super(key: key);
@@ -22,12 +20,6 @@ class _KFHomeFragmentState extends State<KFHomeFragment> {
   void initState() {
     super.initState();
     controller = ScrollController();
-    init();
-  }
-
-  Future<void> init() async {
-    final provider = context.read<KFProvider>();
-    await fetchDataAndStoreData(provider);
   }
 
   @override

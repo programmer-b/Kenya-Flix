@@ -1,5 +1,18 @@
+import 'dart:developer';
+
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:kenyaflix/Commons/kf_colors.dart';
+import 'package:kenyaflix/Commons/kf_strings.dart';
+import 'package:kenyaflix/Components/kf_image_container_component.dart';
+import 'package:kenyaflix/Database/kf_movie_database.dart';
+import 'package:kenyaflix/Models/kf_movie_model.dart';
+import 'package:kenyaflix/Provider/kf_provider.dart';
+import 'package:kenyaflix/Utils/kf_networking.dart';
+import 'package:nb_utils/nb_utils.dart' hide log;
+import 'package:provider/provider.dart';
+
+import '../Commons/kf_functions.dart';
 
 class KFBrowserComponent extends StatefulWidget {
   const KFBrowserComponent({Key? key}) : super(key: key);
@@ -9,18 +22,159 @@ class KFBrowserComponent extends StatefulWidget {
 }
 
 class _KFBrowserComponentState extends State<KFBrowserComponent> {
+  String baseUrl = kfMoviesBaseUrl;
+  String path = "-genre-Action";
+
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
+  final int _id = 53;
+  int get id => _id;
+
+  bool isMovie = true;
+  Future<void> updateBaseUrl(value) async {
+    await KFMovieDatabase.instance.delete(id);
+    setState(() {
+      isMovie = !isMovie;
+      baseUrl = value == 'Movies' ? kfMoviesBaseUrl : kfSeriesBaseUrl;
+    });
+    log('NEW URL: ${baseUrl + path}');
+    await _fetchAndStractureData(baseUrl + path);
+  }
+
+  Future<void> updateGenere(String value) async {
+    await KFMovieDatabase.instance.delete(id);
+    for (int i = 0; i < genres.length; i++) {
+      if (genres[i]['name'] == value) {
+        setState(() => path = genres[i]['path'] ?? "");
+        break;
+      }
+    }
+    log('NEW URL: ${baseUrl + path}');
+    await _fetchAndStractureData(baseUrl + path);
+  }
+
+  Future<void> _fetchAndStractureData(url) async {
+    setState(() => _isLoading = true);
+    final data = await fetchMoviesAndSeries(url);
+    setState(() => _isLoading = false);
+    if (data == '') {
+      await 1.seconds.delay;
+      if (mounted) {
+        context.read<KFProvider>().setError(true);
+      }
+    }
+
+    final moviesData = KFMovieModel(genreGeneratedMovieData: data, id: 53);
+    await KFMovieDatabase.instance.create(moviesData);
+  }
+
+  @override
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future<void> init() async {
+    await KFMovieDatabase.instance.delete(id);
+    _fetchAndStractureData(baseUrl + path);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: [_sliverAppBar()],
+    final width = MediaQuery.of(context).size.width;
+
+    return Column(
+      children: [
+        _header(width),
+        8.height,
+        SingleChildScrollView(
+          child: StreamBuilder<String>(
+              stream: fetchData(53),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.data != '') {
+                    final data = stractureData(snapshot.data ?? '',
+                        stractureAllData: true);
+                    return Wrap(
+                      children: [
+                        for (int i = 0; i < data.length; i++)
+                          KFImageContainerComponent(
+                                  urlImage:
+                                      'https:${data[i]['imageUrl'] ?? ''}',
+                                  homeUrl: data[i]['imageUrl'] ?? '')
+                              .paddingAll(8)
+                      ],
+                    );
+                  }
+                }
+                return _loadingWidget();
+              }),
+        )
+      ],
     );
   }
 
-  Widget _sliverAppBar() => SliverAppBar(
-          title: Row(
-        children: [_categoryDropdown(), _genreDropdown()],
-      ));
-  Widget _categoryDropdown() => DropdownSearch<String>();
-  Widget _genreDropdown() => DropdownSearch<String>();
+  Widget _loadingWidget() => Center(
+        child: Loader(
+          valueColor: kfLoadingIndicatorValueColor,
+        ),
+      ).paddingSymmetric(vertical: 20);
+
+  Widget _header(width) => Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [_categoryDropdown(width), _genreDropdown(width)],
+      ).paddingSymmetric(horizontal: 10);
+  Widget _categoryDropdown(width) {
+    List<String> showCategory = [];
+    for (int i = 0; i < category.length; i++) {
+      showCategory.insert(i, category[i]["name"] ?? "");
+    }
+    return SizedBox(
+      width: width * (40 / 100),
+      child: DropdownSearch<String>(
+        popupProps: const PopupProps.menu(
+          showSelectedItems: true,
+        ),
+        items: showCategory,
+        dropdownDecoratorProps: const DropDownDecoratorProps(
+          dropdownSearchDecoration: InputDecoration(
+            labelText: "Category",
+          ),
+        ),
+        onChanged: (value) => updateBaseUrl(value),
+        selectedItem: "Movies",
+      ),
+    );
+  }
+
+  Widget _genreDropdown(width) {
+    List<String> showGenres = [];
+    for (int i = 0; i < genres.length; i++) {
+      showGenres.insert(i, genres[i]["name"] ?? "");
+    }
+    return SizedBox(
+      width: width * (40 / 100),
+      child: DropdownSearch<String>(
+        popupProps: const PopupProps.menu(
+          showSelectedItems: true,
+        ),
+        items: showGenres,
+        dropdownDecoratorProps: const DropDownDecoratorProps(
+          dropdownSearchDecoration: InputDecoration(
+            labelText: "Genre",
+            hintText: "country in menu mode",
+          ),
+        ),
+        onChanged: (value) => updateGenere(value ?? '-genre-Action'),
+        selectedItem: "Action",
+      ),
+    );
+  }
 }

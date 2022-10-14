@@ -9,7 +9,7 @@ class KFBrowseCategoryFragment extends StatelessWidget {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (BuildContext context, int index) {
-          return const KFBrowserComponent();
+          return KFBrowserComponent(key: UniqueKey(),);
         },
         childCount: 1,
       ),
