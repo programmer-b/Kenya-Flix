@@ -21,7 +21,6 @@ class _KFSplashScreenState extends State<KFSplashScreen> {
    @override
   void initState() {
     super.initState();
-   
     init();
   }
 
@@ -32,7 +31,7 @@ class _KFSplashScreenState extends State<KFSplashScreen> {
 
 
   Future<void> _ready() async {
-    await 3.seconds.delay;
+    await 4.seconds.delay;
   }
 
   void launchToHomeScreen() {

@@ -2,9 +2,11 @@ import 'dart:developer';
 
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:html/parser.dart';
 import 'package:kenyaflix/Commons/kf_colors.dart';
 import 'package:kenyaflix/Commons/kf_strings.dart';
 import 'package:kenyaflix/Components/kf_image_container_component.dart';
+import 'package:kenyaflix/Components/kf_pagination_component.dart';
 import 'package:kenyaflix/Database/kf_movie_database.dart';
 import 'package:kenyaflix/Models/kf_movie_model.dart';
 import 'package:kenyaflix/Provider/kf_provider.dart';
@@ -24,6 +26,10 @@ class KFBrowserComponent extends StatefulWidget {
 class _KFBrowserComponentState extends State<KFBrowserComponent> {
   String baseUrl = kfMoviesBaseUrl;
   String path = "-genre-Action";
+  String page = "?p=";
+
+  int _currentPage = 1;
+  int get currentPage => _currentPage;
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -38,23 +44,37 @@ class _KFBrowserComponentState extends State<KFBrowserComponent> {
       isMovie = !isMovie;
       baseUrl = value == 'Movies' ? kfMoviesBaseUrl : kfSeriesBaseUrl;
     });
-    log('NEW URL: ${baseUrl + path}');
-    await _fetchAndStractureData(baseUrl + path);
+    await _fetchAndStractureData('$baseUrl$path$page$_currentPage');
   }
 
   Future<void> updateGenere(String value) async {
     await KFMovieDatabase.instance.delete(id);
     for (int i = 0; i < genres.length; i++) {
       if (genres[i]['name'] == value) {
-        setState(() => path = genres[i]['path'] ?? "");
+        setState(() {
+          _currentPage = 1; 
+          path = genres[i]['path'] ?? "";
+        });
         break;
       }
     }
-    log('NEW URL: ${baseUrl + path}');
-    await _fetchAndStractureData(baseUrl + path);
+    await _fetchAndStractureData('$baseUrl$path$page$currentPage');
+  }
+
+  Future<void> onPressedNextButton() async {
+    await KFMovieDatabase.instance.delete(id);
+    setState(() => _currentPage++);
+    await _fetchAndStractureData('$baseUrl$path$page$currentPage');
+  }
+
+  Future<void> onPressedPrevButton() async {
+    await KFMovieDatabase.instance.delete(id);
+    setState(() => _currentPage--);
+    await _fetchAndStractureData('$baseUrl$path$page$currentPage');
   }
 
   Future<void> _fetchAndStractureData(url) async {
+    await 500.milliseconds.delay;
     setState(() => _isLoading = true);
     final data = await fetchMoviesAndSeries(url);
     setState(() => _isLoading = false);
@@ -79,6 +99,7 @@ class _KFBrowserComponentState extends State<KFBrowserComponent> {
   @override
   void initState() {
     super.initState();
+    init();
   }
 
   Future<void> init() async {
@@ -102,6 +123,18 @@ class _KFBrowserComponentState extends State<KFBrowserComponent> {
                   if (snapshot.data != '') {
                     final data = stractureData(snapshot.data ?? '',
                         stractureAllData: true);
+                    final pgs = parse(snapshot.data)
+                            .getElementById('pgs')
+                            ?.getElementsByTagName('a') ??
+                        [];
+                    final hasNext = pgs.isNotEmpty
+                        ? pgs[pgs.length - 1]
+                            .firstChild
+                            .toString()
+                            .contains('Next')
+                        : false;
+                    log('LAST PAGE: $hasNext');
+                    log('CURRENT PAGE: $currentPage');
                     return Wrap(
                       children: [
                         for (int i = 0; i < data.length; i++)
@@ -109,7 +142,16 @@ class _KFBrowserComponentState extends State<KFBrowserComponent> {
                                   urlImage:
                                       'https:${data[i]['imageUrl'] ?? ''}',
                                   homeUrl: data[i]['imageUrl'] ?? '')
-                              .paddingAll(8)
+                              .paddingAll(8),
+                        KFPaginationComponent(
+                          onPressedPrevButton: currentPage > 1
+                              ? () => onPressedPrevButton()
+                              : null,
+                          onPressedNextButton:
+                              hasNext ? () => onPressedNextButton() : null,
+
+                              currentPage: currentPage,
+                        )
                       ],
                     );
                   }

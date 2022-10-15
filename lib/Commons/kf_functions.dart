@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:html/parser.dart';
 import 'package:kenyaflix/Commons/kf_strings.dart';
@@ -10,7 +9,6 @@ import 'package:kenyaflix/Utils/kf_networking.dart';
 List<Map<String, String>> stractureData(String data,
     {bool stractureAllData = false, bool trending = false}) {
   final List<Map<String, String>> urls = [];
-    log('ALL DATA: $data');
 
   final document = parse(data);
 

@@ -3,6 +3,8 @@ import 'package:kenyaflix/Commons/kf_colors.dart';
 import 'package:kenyaflix/Commons/kf_strings.dart';
 import 'package:nb_utils/nb_utils.dart';
 
+import '../Commons/kf_themes.dart';
+
 class KFErrorScreenComponent extends StatefulWidget {
   const KFErrorScreenComponent({Key? key}) : super(key: key);
 
@@ -25,7 +27,7 @@ class _KFErrorScreenComponentState extends State<KFErrorScreenComponent> {
           10.height,
           ElevatedButton(
             onPressed: () => RestartAppWidget.init(context),
-            style: ElevatedButton.styleFrom(backgroundColor: kfAppBarBgColor),
+             style: kfButtonStyle(context),
             child: Text(
               "Retry",
               style: boldTextStyle(color: kfPrimaryTextColor),

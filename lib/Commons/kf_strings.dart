@@ -8,6 +8,9 @@ const kfAppLogoAsset = "assets/images/kenya_flix_logo.png";
 const kfMoviesBaseUrl = "https://www.goojara.to/watch-movies";
 const kfSeriesBaseUrl = "https://www.goojara.to/watch-series";
 
+const kfPrevButtonLabel = "Prev";
+const kfNextButtonLabel = "Next";
+
 const List<Map<String, dynamic>> trendingNowMovies = [
   {
     "display_title": "Trending Now On $kfAppName",
