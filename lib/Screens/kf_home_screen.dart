@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:kenyaflix/Commons/kf_colors.dart';
 import 'package:kenyaflix/Fragments/kf_downloads_fragment.dart';
 import 'package:kenyaflix/Fragments/kf_home_fragment.dart';
 import 'package:kenyaflix/Fragments/kf_trailers_and_more_fragment.dart';
+import 'package:nb_utils/nb_utils.dart';
 
 class KFHomeScreen extends StatefulWidget {
   const KFHomeScreen({Key? key}) : super(key: key);
@@ -36,6 +38,7 @@ class _KFHomeScreenState extends State<KFHomeScreen> {
         unselectedLabelStyle: const TextStyle(fontSize: 12),
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.white,
+        backgroundColor: kfScaffoldBackgroundColor,
         onTap: _onItemTapped,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(

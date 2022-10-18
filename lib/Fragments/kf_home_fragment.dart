@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:kenyaflix/Commons/kf_colors.dart';
 import 'package:kenyaflix/Commons/kf_menus.dart';
 import 'package:kenyaflix/Components/kf_app_bar_menu_component.dart';
 import 'package:kenyaflix/Components/kf_error_screen_component.dart';
+import 'package:kenyaflix/Components/kf_sliver_app_bar_component.dart';
 import 'package:kenyaflix/Provider/kf_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -30,39 +30,25 @@ class _KFHomeFragmentState extends State<KFHomeFragment> {
           : CustomScrollView(
               controller: controller,
               slivers: <Widget>[
-                _silverAppbarActions(controller),
+                KFSliverAppBarComponent(
+                  pinned: false,
+                  snap: true,
+                  floating: true,
+                  expandedHeight: 90,
+                  flexibleSpace: _flexibleSpace(controller),
+                ),
                 kfTopAppBarMenu[provider.selectedHomeCategory]['widget']
               ],
             );
     });
   }
 
-  Widget _silverAppbarActions(ScrollController? controller) {
-    return SliverAppBar(
-      automaticallyImplyLeading: false,
-      iconTheme: const IconThemeData(color: Colors.white60),
-      actions: [
-        IconButton(onPressed: () {}, icon: const Icon(Icons.search, size: 37)),
-        IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.account_circle,
-              size: 37,
-            ))
-      ],
-      backgroundColor: kfAppBarBgColor,
-      pinned: false,
-      snap: false,
-      floating: true,
-      expandedHeight: 90,
-      flexibleSpace: Padding(
+  Widget _flexibleSpace(ScrollController? controller) => Padding(
         padding: EdgeInsets.zero,
         child: FlexibleSpaceBar(
           title: KFAppBarMenuComponent(controller: controller),
           titlePadding: EdgeInsets.zero,
           collapseMode: CollapseMode.none,
         ),
-      ),
-    );
-  }
+      );
 }

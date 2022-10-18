@@ -9,7 +9,6 @@ import 'package:provider/provider.dart';
 import '../Commons/kf_functions.dart';
 import '../Provider/kf_provider.dart';
 
-
 class KFSplashScreen extends StatefulWidget {
   const KFSplashScreen({Key? key}) : super(key: key);
 
@@ -18,7 +17,7 @@ class KFSplashScreen extends StatefulWidget {
 }
 
 class _KFSplashScreenState extends State<KFSplashScreen> {
-   @override
+  @override
   void initState() {
     super.initState();
     init();
@@ -26,9 +25,9 @@ class _KFSplashScreenState extends State<KFSplashScreen> {
 
   Future<void> init() async {
     final provider = context.read<KFProvider>();
+    provider.stracturePopularMoviesAndSeriesData();
     await fetchDataAndStoreData(provider);
   }
-
 
   Future<void> _ready() async {
     await 4.seconds.delay;

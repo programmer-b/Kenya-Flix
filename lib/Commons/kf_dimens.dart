@@ -9,5 +9,13 @@ double kfTopSrollableImageHeightDimen(context) {
 const double defaultGenreImageHeightDimen = 150;
 const double defaultGenreImageWidthDimen = 100;
 
-const double trendingImageHeightDimen = 240;
-const double trendingImageWidthDimen = 120;
+const double trendingImageHeightDimen = 150;
+const double trendingImageWidthDimen = 100;
+
+const double kfPlaceHolderTextRadiusDimen = 16;
+
+const double smallTextWidthDimen = 45;
+const double mediumTextWidthDimen = 90;
+const double largeTextWidthDimen = 135;
+
+const double kfDefaultTextHeight = 18;

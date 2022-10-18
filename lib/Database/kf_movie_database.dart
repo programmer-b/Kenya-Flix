@@ -26,8 +26,15 @@ class KFMovieDatabase {
     await db.execute('''
 CREATE TABLE $tableMovies (
   ${MovieFields.id} $idType,
-
-   ${MovieFields.genreGeneratedMovieData} $textType
+   ${MovieFields.genreGeneratedMovieData} $textType,
+   ${MovieFields.tmdbID} $idType,
+   ${MovieFields.year} $textType,
+   ${MovieFields.backdropsPath} $textType,
+   ${MovieFields.posterPath} $textType,
+   ${MovieFields.releaseDate} $textType,
+   ${MovieFields.overview} $textType,
+   ${MovieFields.title} $textType,
+   ${MovieFields.homeUrl} $textType
 )
 ''');
   }

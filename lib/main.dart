@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kenyaflix/Commons/kf_colors.dart';
 import 'package:kenyaflix/Commons/kf_strings.dart';
 import 'package:kenyaflix/Commons/kf_themes.dart';
 import 'package:kenyaflix/Provider/kf_provider.dart';

@@ -1,4 +1,3 @@
-
 import 'package:html/parser.dart';
 import 'package:kenyaflix/Commons/kf_strings.dart';
 import 'package:kenyaflix/Database/kf_movie_database.dart';
@@ -33,6 +32,21 @@ Stream<String> fetchData(int id) async* {
   yield data?.genreGeneratedMovieData ?? '';
 }
 
+Stream<KFMovieModel> fetchAllData(int id) async* {
+  final data = await KFMovieDatabase.instance.readMovie(id);
+  yield data ??
+      const KFMovieModel(
+          genreGeneratedMovieData: "null",
+          tmdbID: 0,
+          year: "null",
+          backdropsPath: "null",
+          posterPath: "null",
+          releaseDate: "null",
+          overview: "null",
+          title: "null",
+          homeUrl: "null");
+}
+
 Future<void> fetchDataAndStoreData(KFProvider provider) async {
   final moviesAndSeriesUrls = [
     ...trendingNowMovies,
@@ -46,7 +60,16 @@ Future<void> fetchDataAndStoreData(KFProvider provider) async {
       Future.delayed(Duration.zero, () => provider.setError(true));
     } else {
       final moviesData = KFMovieModel(
-          genreGeneratedMovieData: data, id: moviesAndSeriesUrls[i]['id']);
+        id: moviesAndSeriesUrls[i]['id'],
+        genreGeneratedMovieData: data,
+          tmdbID: 0,
+          year: "null",
+          backdropsPath: "null",
+          posterPath: "null",
+          releaseDate: "null",
+          overview: "null",
+          title: "null",
+          homeUrl: "null");
       await KFMovieDatabase.instance.create(moviesData);
     }
   }

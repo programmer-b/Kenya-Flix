@@ -8,8 +8,32 @@ const kfAppLogoAsset = "assets/images/kenya_flix_logo.png";
 const kfMoviesBaseUrl = "https://www.goojara.to/watch-movies";
 const kfSeriesBaseUrl = "https://www.goojara.to/watch-series";
 
+const kfPopularMoviesUrl = "$kfMoviesBaseUrl-popular";
+const kfPopularSeriesUrl = "$kfSeriesBaseUrl-popular";
+
+const kfTMDBaseUrl = "https://api.themoviedb.org";
+const kfTMDBAPIKEY = "727c59ab265fc8dfe32a7786b0cb2a96";
+const kfOriginalTMDBImageUrl = "https://image.tmdb.org/t/p/original";
+String kfTMDBSearchImagesUrl({required String type, required String id}) {
+  return "$kfTMDBaseUrl/3/$type/$id/images?api_key=$kfTMDBAPIKEY";
+}
+
+String kfTMDBSearchMoviesORSeriesUrl(
+    {required String type,
+    required String year,
+    required String query,
+    bool includeAdult = true}) {
+  return "$kfTMDBaseUrl/3/search/$type?api_key=$kfTMDBAPIKEY&query=$query&include_adult=$includeAdult&year=$year";
+}
+
 const kfPrevButtonLabel = "Prev";
 const kfNextButtonLabel = "Next";
+
+int kfmovieDetailSecondaryID = 101;
+String kfMoviesDetailBaseUrl = "https://ww1.goojara.to";
+
+List<int> kfPopularMoviesIDs = List.generate(10, (index) => index + 60);
+List<int> kfPopularSeriesIDs = List.generate(10, (index) => index + 70);
 
 const List<Map<String, dynamic>> trendingNowMovies = [
   {

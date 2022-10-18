@@ -17,23 +17,6 @@ Widget loadingWidget({bool trending = false}) => Column(
       ],
     ).paddingSymmetric(vertical: 5, horizontal: 8);
 
-Widget horrizontalImageListBuilder(
-        {required List<Map<String, String>> urls,
-        void Function()? onTap,
-        bool trending = false}) =>
-    HorizontalList(
-        itemCount: trending ? urls.length : 10,
-        itemBuilder: (context, index) {
-          final imageUrl = urls[index]['imageUrl'];
-          final homeUrl = urls[index]['homeUrl'] ?? "";
-          final urlImage = 'https:$imageUrl';
-          return KFImageContainerComponent(
-            urlImage: urlImage,
-            homeUrl: homeUrl,
-            trending: trending,
-          );
-        });
-
 Widget genreTitleWidget(String genre,
         {required bool isMovie, bool trending = false}) =>
     Row(
@@ -43,7 +26,8 @@ Widget genreTitleWidget(String genre,
                 text: trending ? '' : 'Rock Flix - ',
                 children: <TextSpan>[
                   TextSpan(
-                      text: "$genre ${trending ? '': isMovie ? 'Movies' : 'Series'} ",
+                      text:
+                          "$genre ${trending ? '' : isMovie ? 'Movies' : 'Series'} ",
                       style: boldTextStyle(color: Colors.white))
                 ],
                 style: boldTextStyle(color: Colors.blue))),
@@ -66,3 +50,17 @@ Widget imagePlaceHolder({bool trending = false}) => Padding(
         fadeTheme: FadeTheme.dark,
       ),
     );
+Widget textShimmer(double width) => Container(
+      decoration: const BoxDecoration(
+          borderRadius:
+              BorderRadius.all(Radius.circular(kfPlaceHolderTextRadiusDimen))),
+      child: FadeShimmer(
+        radius: 6,
+        height: kfDefaultTextHeight,
+        width: width,
+        fadeTheme: FadeTheme.dark,
+      ),
+    );
+Widget smallTextShimmer() => textShimmer(smallTextWidthDimen);
+Widget mediumTextShimmer() => textShimmer(mediumTextWidthDimen);
+Widget largeTextShimmer() => textShimmer(largeTextWidthDimen);

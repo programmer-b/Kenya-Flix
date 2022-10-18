@@ -1,8 +1,8 @@
-import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:kenyaflix/Commons/kf_dimens.dart';
+import 'package:kenyaflix/Screens/kf_movie_detail_screen.dart';
+import 'package:nb_utils/nb_utils.dart' hide log;
 
 import 'kf_common_components.dart';
 
@@ -22,7 +22,7 @@ class KFImageContainerComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => log(homeUrl),
+      onTap: () => KFMovieDetailScreen(homeUrl: homeUrl).launch(context),
       child: CachedNetworkImage(
         key: UniqueKey(),
         imageUrl: urlImage,
@@ -38,13 +38,13 @@ class KFImageContainerComponent extends StatelessWidget {
             decoration: BoxDecoration(
                 border: Border.all(
                   color: Colors.yellow,
-                  width: 0.2,
+                  width: 0.1,
                 ),
-                image: DecorationImage(image: image, fit: BoxFit.cover),
+                image: DecorationImage(image: image, fit: BoxFit.fill),
                 borderRadius: const BorderRadius.all(Radius.circular(5))),
           ),
         ),
-        height: 150,
+        
         placeholder: (context, url) => imagePlaceHolder(),
         errorWidget: (context, url, error) => imagePlaceHolder(),
       ),

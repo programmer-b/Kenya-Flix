@@ -42,6 +42,7 @@ class _KFBrowserComponentState extends State<KFBrowserComponent> {
     await KFMovieDatabase.instance.delete(id);
     setState(() {
       isMovie = !isMovie;
+      _currentPage = 1;
       baseUrl = value == 'Movies' ? kfMoviesBaseUrl : kfSeriesBaseUrl;
     });
     await _fetchAndStractureData('$baseUrl$path$page$_currentPage');
@@ -52,7 +53,7 @@ class _KFBrowserComponentState extends State<KFBrowserComponent> {
     for (int i = 0; i < genres.length; i++) {
       if (genres[i]['name'] == value) {
         setState(() {
-          _currentPage = 1; 
+          _currentPage = 1;
           path = genres[i]['path'] ?? "";
         });
         break;
@@ -85,7 +86,14 @@ class _KFBrowserComponentState extends State<KFBrowserComponent> {
       }
     }
 
-    final moviesData = KFMovieModel(genreGeneratedMovieData: data, id: 53);
+    final moviesData = KFMovieModel(genreGeneratedMovieData: data, id: 53   ,                           tmdbID: 0,
+          year: "null",
+          backdropsPath: "null",
+          posterPath: "null",
+          releaseDate: "null",
+          overview: "null",
+          title: "null",
+          homeUrl: "null");
     await KFMovieDatabase.instance.create(moviesData);
   }
 
@@ -110,7 +118,6 @@ class _KFBrowserComponentState extends State<KFBrowserComponent> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-
     return Column(
       children: [
         _header(width),
@@ -141,7 +148,7 @@ class _KFBrowserComponentState extends State<KFBrowserComponent> {
                           KFImageContainerComponent(
                                   urlImage:
                                       'https:${data[i]['imageUrl'] ?? ''}',
-                                  homeUrl: data[i]['imageUrl'] ?? '')
+                                  homeUrl: data[i]['homeUrl'] ?? '')
                               .paddingAll(8),
                         KFPaginationComponent(
                           onPressedPrevButton: currentPage > 1
@@ -149,8 +156,7 @@ class _KFBrowserComponentState extends State<KFBrowserComponent> {
                               : null,
                           onPressedNextButton:
                               hasNext ? () => onPressedNextButton() : null,
-
-                              currentPage: currentPage,
+                          currentPage: currentPage,
                         )
                       ],
                     );
