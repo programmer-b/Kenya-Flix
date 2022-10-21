@@ -68,12 +68,18 @@ class _KFHeaderCarouselBuilderComponentState
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             final backdropImageUrl = snapshot.data?.backdropsPath;
-            final title = snapshot.data?.title;
+            final title = snapshot.data?.title ?? "";
+            final year = snapshot.data?.year ?? "";
+            final type = widget.isMovie ? "movie" : "tv";
             if (backdropImageUrl != "null") {
               final url = '$kfOriginalTMDBImageUrl$backdropImageUrl';
               log(url);
               return _imageBuilder(
-                  url, title ?? (widget.isMovie ? "Movie" : "TV Show"), snapshot.data?.homeUrl ?? "https://www.goojara.to/eAeMM8");
+                  url,
+                  title,
+                  snapshot.data?.homeUrl ?? "https://www.goojara.to/eAeMM8",
+                  year,
+                  type);
             }
           }
           return _imagePlaceHolder();
@@ -97,9 +103,16 @@ class _KFHeaderCarouselBuilderComponentState
         fadeTheme: FadeTheme.dark,
       );
 
-  Widget _imageBuilder(String imageUrl, String title, String homeUrl) => GestureDetector(
-    onTap: () => KFMovieDetailScreen(homeUrl: homeUrl).launch(context),
-    child: CachedNetworkImage(
+  Widget _imageBuilder(String imageUrl, String query, String homeUrl,
+          String year, String type) =>
+      GestureDetector(
+        onTap: () => KFMovieDetailScreen(
+          homeUrl: homeUrl,
+          query: query,
+          year: year,
+          type: type,
+        ).launch(context),
+        child: CachedNetworkImage(
           imageUrl: imageUrl,
           key: UniqueKey(),
           imageBuilder: ((context, image) {
@@ -109,7 +122,6 @@ class _KFHeaderCarouselBuilderComponentState
                   width: double.infinity,
                   decoration: BoxDecoration(
                       image: DecorationImage(image: image, fit: BoxFit.cover),
-                      border: Border.all(color: Colors.yellow, width: 0.1),
                       borderRadius: const BorderRadius.all(Radius.circular(8))),
                 ),
                 Positioned(
@@ -121,7 +133,7 @@ class _KFHeaderCarouselBuilderComponentState
                       height: 30,
                       child: Center(
                           child: Text(
-                        title,
+                        query,
                         style: boldTextStyle(color: kfPrimaryTextColor),
                       ))),
                 )
@@ -131,5 +143,5 @@ class _KFHeaderCarouselBuilderComponentState
           placeholder: (_, __) => _imagePlaceHolder(),
           errorWidget: (_, __, ___) => _imagePlaceHolder(),
         ),
-  );
+      );
 }

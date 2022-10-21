@@ -11,6 +11,9 @@ const kfSeriesBaseUrl = "https://www.goojara.to/watch-series";
 const kfPopularMoviesUrl = "$kfMoviesBaseUrl-popular";
 const kfPopularSeriesUrl = "$kfSeriesBaseUrl-popular";
 
+const kfPopularMoviesDatabaseId = 81;
+const kfPopularSeriesDatabaseId = 82;
+
 const kfTMDBaseUrl = "https://api.themoviedb.org";
 const kfTMDBAPIKEY = "727c59ab265fc8dfe32a7786b0cb2a96";
 const kfOriginalTMDBImageUrl = "https://image.tmdb.org/t/p/original";

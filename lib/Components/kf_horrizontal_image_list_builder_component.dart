@@ -6,9 +6,13 @@ import 'package:provider/provider.dart';
 
 class KFHorrizontalImageListBuilderComponent extends StatefulWidget {
   const KFHorrizontalImageListBuilderComponent(
-      {super.key, required this.urls, this.trending = false});
+      {super.key,
+      required this.args,
+     this.trending = false,
+      required this.type});
 
-  final List<Map<String, String>> urls;
+  final List<Map<String, String>> args;
+  final String type;
   final bool trending;
 
   @override
@@ -18,12 +22,12 @@ class KFHorrizontalImageListBuilderComponent extends StatefulWidget {
 
 class _KFHorrizontalImageListBuilderComponentState
     extends State<KFHorrizontalImageListBuilderComponent> {
-  late List<Map<String, String>> urls;
+  late List<Map<String, String>> args;
   late bool trending;
   @override
   void initState() {
     super.initState();
-    urls = widget.urls;
+    args = widget.args;
     trending = widget.trending;
   }
 
@@ -31,16 +35,22 @@ class _KFHorrizontalImageListBuilderComponentState
   Widget build(BuildContext context) {
     return Consumer<KFProvider>(
       builder: (context, provider, child) {
-       return  HorizontalList(
-            itemCount: trending ? urls.length : 10,
+        return HorizontalList(
+            itemCount: trending ? args.length : 10,
             itemBuilder: (context, index) {
-              final imageUrl = urls[index]['imageUrl'];
-              final homeUrl = urls[index]['homeUrl'] ?? "";
+              final imageUrl = args[index]['imageUrl'];
+              final homeUrl = args[index]['homeUrl'] ?? "";
+              final type = widget.type;
+              final query = args[index]['query'] ?? "";
+              final year = args[index]['year'] ?? "";
               final urlImage = 'https:$imageUrl';
               return KFImageContainerComponent(
                 urlImage: urlImage,
                 homeUrl: homeUrl,
                 trending: trending,
+                year: year,
+                query: query,
+                type: type,
               );
             });
       },

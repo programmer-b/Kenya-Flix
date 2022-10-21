@@ -13,9 +13,17 @@ import 'package:provider/provider.dart';
 import '../Utils/kf_networking.dart';
 
 class KFMovieDetailScreen extends StatefulWidget {
-  const KFMovieDetailScreen({Key? key, required this.homeUrl})
+  const KFMovieDetailScreen(
+      {Key? key,
+      required this.homeUrl,
+      required this.type,
+      this.year,
+      required this.query})
       : super(key: key);
   final String homeUrl;
+  final String query;
+  final String type;
+  final String? year;
 
   @override
   State<KFMovieDetailScreen> createState() => _KFMovieDetailScreenState();

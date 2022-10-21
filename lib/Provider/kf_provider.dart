@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -8,7 +7,8 @@ import 'package:kenyaflix/Database/kf_movie_database.dart';
 import 'package:kenyaflix/Models/kf_movie_model.dart';
 import 'package:kenyaflix/Utils/kf_networking.dart';
 import 'package:nb_utils/nb_utils.dart' hide log;
-import 'package:http/http.dart' as http;
+
+import '../Commons/kf_functions.dart';
 
 class KFProvider with ChangeNotifier {
   /// Here is a boolean value indicating when the app is loading
@@ -44,7 +44,6 @@ class KFProvider with ChangeNotifier {
   /// then search them from the TMDB to get IDs
   /// We will then use this IDs to get the image backdrop
   /// of the particular  movie or tv show
-
   Future<void> stracturePopularMoviesAndSeriesData() async {
     final movies = await fetchMoviesAndSeries(kfPopularMoviesUrl);
     final series = await fetchMoviesAndSeries(kfPopularSeriesUrl);
@@ -69,59 +68,32 @@ class KFProvider with ChangeNotifier {
 
       if (query == '' || year == '' || homeUrl == '') setError(true);
 
-      final element = await _fetchTheIDAndBackdropFromTMDB(
+      final element = await fetchTheIDAndBackdropFromTMDB(
           query: query, year: year, type: type);
 
-      final movie = KFMovieModel(
-        id: type == "movie" ? kfPopularMoviesIDs[i] : kfPopularSeriesIDs[i],
-        genreGeneratedMovieData: '',
-        tmdbID: element["id"] ?? 'null',
-        year: year,
-        backdropsPath: element["backdrop_path"],
-        posterPath: element["poster_path"],
-        overview: element["overview"],
-        title: query,
-        releaseDate: element["release_date"],
-        homeUrl: homeUrl
-      );
-
-      await KFMovieDatabase.instance.create(movie);
-    }
-  }
-
-  Future<Map<String, dynamic>> _fetchTheIDAndBackdropFromTMDB(
-      {required String query,
-      required String year,
-      required String type}) async {
-    final uri = Uri.parse(
-        kfTMDBSearchMoviesORSeriesUrl(type: type, year: year, query: query));
-    try {
-      final data = await http.get(uri);
-      if (data.statusCode == 200) {
-        final rootObject = jsonDecode(data.body)["results"][0];
-
-        var id = rootObject["id"];
-        var backDropPath = rootObject["backdrop_path"].toString();
-        var posterPath = rootObject["poster_path"].toString();
-        var overview = rootObject["overview"].toString();
-        var releaseDate = rootObject["first_air_date"].toString();
-
-        return {
-          "id": id,
-          "backdrop_path": backDropPath,
-          "type": type,
-          "poster_path": posterPath,
-          "overview": overview,
-          "release_date": releaseDate,
-        };
-      } else {
-        log("FAILED BECAUSE, TRIED TO SEARCH $uri AND GOT ${data.body}");
+      if (element["id"] == null) {
         setError(true);
-        throw ("Search Error occured");
+        return;
       }
-    } catch (e) {
-      setError(true);
-      rethrow;
+
+      final movie = KFMovieModel(
+          id: type == "movie" ? kfPopularMoviesIDs[i] : kfPopularSeriesIDs[i],
+          genreGeneratedMovieData: '',
+          tmdbID: element["id"] ?? 'null',
+          year: year,
+          backdropsPath: element["backdrop_path"],
+          posterPath: element["poster_path"],
+          overview: element["overview"],
+          title: query,
+          releaseDate: element["release_date"],
+          homeUrl: homeUrl);
+
+      final dbValue = await KFMovieDatabase.instance.readMovie(
+          type == "movie" ? kfPopularMoviesIDs[i] : kfPopularSeriesIDs[i]);
+
+      dbValue == null
+          ? await KFMovieDatabase.instance.create(movie)
+          : await KFMovieDatabase.instance.update(movie);
     }
   }
 }

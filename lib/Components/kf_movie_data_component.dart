@@ -25,7 +25,9 @@ class _KFMovieDataComponentState extends State<KFMovieDataComponent> {
   @override
   void initState() {
     super.initState();
-    _stream = fetchData(widget.isMovie ? movies[widget.index]['id'] : series[widget.index]['id']);
+    _stream = fetchData(widget.isMovie
+        ? movies[widget.index]['id']
+        : series[widget.index]['id']);
   }
 
   @override
@@ -36,7 +38,7 @@ class _KFMovieDataComponentState extends State<KFMovieDataComponent> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.data != '') {
-              final urls = stractureData(snapshot.data ?? '');
+              final args = stractureData(snapshot.data ?? '');
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -46,7 +48,8 @@ class _KFMovieDataComponentState extends State<KFMovieDataComponent> {
                           : series[widget.index]['display_title'],
                       isMovie: widget.isMovie),
                   6.height,
-                  KFHorrizontalImageListBuilderComponent(urls: urls)
+                  KFHorrizontalImageListBuilderComponent(
+                      args: args, type: widget.isMovie ? 'movie' : 'tv')
                 ],
               );
             }

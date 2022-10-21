@@ -6,7 +6,7 @@ import 'package:kenyaflix/Components/kf_common_components.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class KFMovieDetailComponent extends StatefulWidget {
-  const KFMovieDetailComponent({Key? key}) : super(key: key);
+  const KFMovieDetailComponent({super.key});
 
   @override
   State<KFMovieDetailComponent> createState() => _KFMovieDetailComponentState();
@@ -40,19 +40,15 @@ class _KFMovieDetailComponentState extends State<KFMovieDetailComponent> {
 
   Widget _loadingWidget(double width) => Column(
         children: [
+          _imagePlaceHolder(width),
+          16.height,
           _titlePlaceHolder(width),
           16.height,
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _imagePlaceHolder(width),
-              6.width,
-              SizedBox(
-                  width: width * 0.45, child: _movieDescriptionPlaceHolder())
-            ],
-          ),
+          _titlePlaceHolder(width),
           32.height,
-          _movieDetailsActionBar(width)
+          _movieDetailsActionBar(width),
+          26.height,
+          _movieDescriptionPlaceHolder()
         ],
       );
   Widget _titlePlaceHolder(double width) => FadeShimmer(
@@ -63,19 +59,19 @@ class _KFMovieDetailComponentState extends State<KFMovieDetailComponent> {
       );
 
   Widget _imagePlaceHolder(double width) => FadeShimmer(
-        width: width * 0.45,
+        width: width,
         height: 200,
         fadeTheme: FadeTheme.dark,
       );
 
   List<Widget> _smallTextShimmers() =>
-      List<Widget>.generate(5, (index) => smallTextShimmer());
+      List<Widget>.generate(6, (index) => smallTextShimmer());
 
   List<Widget> _mediumTextShimmers() =>
-      List<Widget>.generate(4, (index) => mediumTextShimmer());
+      List<Widget>.generate(5, (index) => mediumTextShimmer());
 
   List<Widget> _largeTextShimmers() =>
-      List<Widget>.generate(2, (index) => largeTextShimmer());
+      List<Widget>.generate(4, (index) => largeTextShimmer());
 
   Widget _movieDescriptionPlaceHolder() {
     List<Widget> descriptionShimmers = [
@@ -83,6 +79,8 @@ class _KFMovieDetailComponentState extends State<KFMovieDetailComponent> {
       ..._mediumTextShimmers(),
       ..._largeTextShimmers()
     ];
+    descriptionShimmers.shuffle();
+    descriptionShimmers.shuffle();
     descriptionShimmers.shuffle();
     return Wrap(spacing: 8, runSpacing: 8, children: descriptionShimmers);
   }
@@ -106,7 +104,7 @@ class _KFMovieDetailComponentState extends State<KFMovieDetailComponent> {
         fadeTheme: FadeTheme.dark,
       );
   Widget _textPlaceHolder(width) => FadeShimmer(
-    radius: 8,
+        radius: 8,
         height: 18,
         width: width * 0.22,
         fadeTheme: FadeTheme.dark,

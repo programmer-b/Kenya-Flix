@@ -42,6 +42,7 @@ class _KFBrowserComponentState extends State<KFBrowserComponent> {
     await KFMovieDatabase.instance.delete(id);
     setState(() {
       isMovie = !isMovie;
+      log("IS MOVIE: $isMovie");
       _currentPage = 1;
       baseUrl = value == 'Movies' ? kfMoviesBaseUrl : kfSeriesBaseUrl;
     });
@@ -86,14 +87,17 @@ class _KFBrowserComponentState extends State<KFBrowserComponent> {
       }
     }
 
-    final moviesData = KFMovieModel(genreGeneratedMovieData: data, id: 53   ,                           tmdbID: 0,
-          year: "null",
-          backdropsPath: "null",
-          posterPath: "null",
-          releaseDate: "null",
-          overview: "null",
-          title: "null",
-          homeUrl: "null");
+    final moviesData = KFMovieModel(
+        genreGeneratedMovieData: data,
+        id: 53,
+        tmdbID: 0,
+        year: "null",
+        backdropsPath: "null",
+        posterPath: "null",
+        releaseDate: "null",
+        overview: "null",
+        title: "null",
+        homeUrl: "null");
     await KFMovieDatabase.instance.create(moviesData);
   }
 
@@ -146,10 +150,12 @@ class _KFBrowserComponentState extends State<KFBrowserComponent> {
                       children: [
                         for (int i = 0; i < data.length; i++)
                           KFImageContainerComponent(
-                                  urlImage:
-                                      'https:${data[i]['imageUrl'] ?? ''}',
-                                  homeUrl: data[i]['homeUrl'] ?? '')
-                              .paddingAll(8),
+                            urlImage: 'https:${data[i]['imageUrl'] ?? ''}',
+                            homeUrl: data[i]['homeUrl'] ?? '',
+                            query: data[i]['query'] ?? '',
+                            year: data[i]['year'] ?? '',
+                            type: isMovie ? "movie" : "tv"
+                          ).paddingAll(8),
                         KFPaginationComponent(
                           onPressedPrevButton: currentPage > 1
                               ? () => onPressedPrevButton()

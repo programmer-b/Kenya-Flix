@@ -11,18 +11,29 @@ class KFImageContainerComponent extends StatelessWidget {
       {Key? key,
       required this.urlImage,
       required this.homeUrl,
-      this.trending = false})
+      this.trending = false,
+      required this.type,
+      required this.query,
+      required this.year})
       : super(key: key);
 
   final String urlImage;
   final String homeUrl;
+  final String type;
+  final String query;
+  final String year;
 
   final bool trending;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => KFMovieDetailScreen(homeUrl: homeUrl).launch(context),
+      onTap: () => KFMovieDetailScreen(
+        homeUrl: homeUrl,
+        query: query,
+        year: year,
+        type: type,
+      ).launch(context),
       child: CachedNetworkImage(
         key: UniqueKey(),
         imageUrl: urlImage,
@@ -44,7 +55,6 @@ class KFImageContainerComponent extends StatelessWidget {
                 borderRadius: const BorderRadius.all(Radius.circular(5))),
           ),
         ),
-        
         placeholder: (context, url) => imagePlaceHolder(),
         errorWidget: (context, url, error) => imagePlaceHolder(),
       ),

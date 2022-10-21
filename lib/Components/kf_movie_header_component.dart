@@ -37,8 +37,8 @@ class _KFMovieHeaderComponentState extends State<KFMovieHeaderComponent> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.data != '') {
-              final trendingUrls =
-                  stractureData(snapshot.data ?? '', trending: true);
+              final trendingUrls = stractureData(snapshot.data ?? '',
+                  trending: true);
               return Column(
                 children: [
                   genreTitleWidget(
@@ -49,7 +49,9 @@ class _KFMovieHeaderComponentState extends State<KFMovieHeaderComponent> {
                       trending: true),
                   6.height,
                   KFHorrizontalImageListBuilderComponent(
-                      urls: trendingUrls, trending: true)
+                      args: trendingUrls,
+                      trending: true,
+                      type: isMovie ? 'movie' : 'tv')
                 ],
               );
             }
