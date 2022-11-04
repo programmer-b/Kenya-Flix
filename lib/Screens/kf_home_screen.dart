@@ -3,7 +3,7 @@ import 'package:kenyaflix/Commons/kf_colors.dart';
 import 'package:kenyaflix/Fragments/kf_downloads_fragment.dart';
 import 'package:kenyaflix/Fragments/kf_home_fragment.dart';
 import 'package:kenyaflix/Fragments/kf_trailers_and_more_fragment.dart';
-import 'package:nb_utils/nb_utils.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class KFHomeScreen extends StatefulWidget {
   const KFHomeScreen({Key? key}) : super(key: key);
@@ -44,8 +44,8 @@ class _KFHomeScreenState extends State<KFHomeScreen> {
           BottomNavigationBarItem(
               tooltip: 'Home',
               icon: _selectedIndex == 0
-                  ? const Icon(Icons.home)
-                  : const Icon(Icons.home_outlined),
+                  ? const Icon(MdiIcons.homeVariant)
+                  : const Icon(MdiIcons.homeVariantOutline),
               label: 'Home'),
           BottomNavigationBarItem(
               tooltip: 'Trailers',

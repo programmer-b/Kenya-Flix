@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kenyaflix/Commons/kf_strings.dart';
-import 'package:kenyaflix/Components/kf_header_carousel_builder_component.dart';
+import 'package:kenyaflix/Fragments/kf_header_carousel_fragment.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../Components/kf_movie_data_component.dart';
@@ -23,7 +23,7 @@ class _KFTvShowsCategoryFragmentState extends State<KFTvShowsCategoryFragment> {
           return Column(
             children: [
               if (index == 0)
-                const KFHeaderCarouselBuilderComponent(isMovie: false),
+                const KFHeaderCarouselFragment(isMovie: false),
               if (index == 0) const KFMovieHeaderComponent(isMovie: false),
               KFMovieDataComponent(index: index, isMovie: false)
             ],

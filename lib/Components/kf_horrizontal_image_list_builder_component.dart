@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kenyaflix/Commons/kf_strings.dart';
 import 'package:kenyaflix/Components/kf_image_container_component.dart';
 import 'package:kenyaflix/Provider/kf_provider.dart';
 import 'package:nb_utils/nb_utils.dart' hide log;
@@ -36,7 +37,7 @@ class _KFHorrizontalImageListBuilderComponentState
     return Consumer<KFProvider>(
       builder: (context, provider, child) {
         return HorizontalList(
-            itemCount: trending ? args.length : 10,
+            itemCount: trending ? args.length : kfGenreHorrizontalIMages,
             itemBuilder: (context, index) {
               final imageUrl = args[index]['imageUrl'];
               final homeUrl = args[index]['homeUrl'] ?? "";
@@ -52,7 +53,8 @@ class _KFHorrizontalImageListBuilderComponentState
                 query: query,
                 type: type,
               );
-            });
+              
+            }, spacing: 0,);
       },
     );
   }

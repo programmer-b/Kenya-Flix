@@ -55,6 +55,7 @@ class _KFMovieDataComponentState extends State<KFMovieDataComponent> {
             }
           }
           if (snapshot.hasError) {
+            log("setting error because snapshot has error: ${snapshot.error}");
             provider.setError(true);
           }
           return loadingWidget();

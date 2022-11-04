@@ -1,7 +1,6 @@
 import 'package:fade_shimmer/fade_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:kenyaflix/Commons/kf_dimens.dart';
-import 'package:kenyaflix/Components/kf_image_container_component.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 Widget loadingWidget({bool trending = false}) => Column(
@@ -50,17 +49,31 @@ Widget imagePlaceHolder({bool trending = false}) => Padding(
         fadeTheme: FadeTheme.dark,
       ),
     );
-Widget textShimmer(double width) => Container(
+Widget textShimmer(double width, {double height = kfDefaultTextHeight}) =>
+    Container(
       decoration: const BoxDecoration(
           borderRadius:
               BorderRadius.all(Radius.circular(kfPlaceHolderTextRadiusDimen))),
       child: FadeShimmer(
         radius: 6,
-        height: kfDefaultTextHeight,
+        height: height,
         width: width,
         fadeTheme: FadeTheme.dark,
       ),
     );
-Widget smallTextShimmer() => textShimmer(smallTextWidthDimen);
-Widget mediumTextShimmer() => textShimmer(mediumTextWidthDimen);
-Widget largeTextShimmer() => textShimmer(largeTextWidthDimen);
+Widget smallTextShimmer({double height = kfDefaultTextHeight}) =>
+    textShimmer(smallTextWidthDimen, height: height);
+Widget mediumTextShimmer({double height = kfDefaultTextHeight}) =>
+    textShimmer(mediumTextWidthDimen, height: height);
+Widget largeTextShimmer({double height = kfDefaultTextHeight}) =>
+    textShimmer(largeTextWidthDimen, height: height);
+
+List<Widget> smallTextShimmers(number, {double height = kfDefaultTextHeight}) =>
+    List<Widget>.generate(number, (index) => smallTextShimmer(height: height));
+
+List<Widget> mediumTextShimmers(number,
+        {double height = kfDefaultTextHeight}) =>
+    List<Widget>.generate(number, (index) => mediumTextShimmer(height: height));
+
+List<Widget> largeTextShimmers(number, {double height = kfDefaultTextHeight}) =>
+    List<Widget>.generate(number, (index) => largeTextShimmer(height: height));

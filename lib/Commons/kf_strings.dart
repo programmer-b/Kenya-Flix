@@ -1,4 +1,12 @@
-const kfContentLoadingError = "Oops! Cant Connect to Rock Flix 😭";
+const kfContentLoadingError = "Oops! Can't Connect to $kfAppName 😭";
+const kfNoInternetConnectionMessage =
+    "Make sure you have Internet connection and then try again";
+const kfContentNotFoundMessage =
+    "Pardon the interuption. This content is not available at the moment. Please consider checking back later.";
+const kfTrimCollapsedText = " More +";
+
+const kfContentRetreaveErrorMessage =
+    "An error occurred while trying to retrieve the content.Please check your connection and try again.";
 
 const dummyVideourl =
     "https://assets.mixkit.co/videos/preview/mixkit-group-of-friends-partying-happily-4640-large.mp4";
@@ -7,6 +15,10 @@ const dummyMovieImageUrl = "https://i.goojara.to/mb_228_228238.jpg";
 const kfAppLogoAsset = "assets/images/kenya_flix_logo.png";
 const kfMoviesBaseUrl = "https://www.goojara.to/watch-movies";
 const kfSeriesBaseUrl = "https://www.goojara.to/watch-series";
+
+String kfSearchIMDBRating(
+        {required String query, required String? year, required String type}) =>
+    "https://www.google.com/search?q=greys+Anatomy+imdb+rating";
 
 const kfPopularMoviesUrl = "$kfMoviesBaseUrl-popular";
 const kfPopularSeriesUrl = "$kfSeriesBaseUrl-popular";
@@ -17,17 +29,34 @@ const kfPopularSeriesDatabaseId = 82;
 const kfTMDBaseUrl = "https://api.themoviedb.org";
 const kfTMDBAPIKEY = "727c59ab265fc8dfe32a7786b0cb2a96";
 const kfOriginalTMDBImageUrl = "https://image.tmdb.org/t/p/original";
-String kfTMDBSearchImagesUrl({required String type, required String id}) {
-  return "$kfTMDBaseUrl/3/$type/$id/images?api_key=$kfTMDBAPIKEY";
-}
+
+String kfTMDBSearchImagesUrl({required String type, required String id}) =>
+    "https://api.themoviedb.org/3/$type/$id/images?api_key=$kfTMDBAPIKEY";
+
+String kfTMDBSearchVideosUrl({required String type, required String id}) =>
+    "https://api.themoviedb.org/3/$type/$id/videos?api_key=$kfTMDBAPIKEY";
 
 String kfTMDBSearchMoviesORSeriesUrl(
-    {required String type,
-    required String year,
-    required String query,
-    bool includeAdult = true}) {
-  return "$kfTMDBaseUrl/3/search/$type?api_key=$kfTMDBAPIKEY&query=$query&include_adult=$includeAdult&year=$year";
-}
+        {required String type,
+        required String? year,
+        required String query,
+        bool includeAdult = true}) =>
+    "$kfTMDBaseUrl/3/search/$type?api_key=$kfTMDBAPIKEY&query=$query&include_adult=$includeAdult&year=$year";
+String kfGetEpisodesUrl({required String id, required String currentSeason}) =>
+    "https://api.themoviedb.org/3/tv/$id/season/$currentSeason?api_key=$kfTMDBAPIKEY";
+
+String kfTMDBSearchByIdUrl({required String type, required String id}) =>
+    "https://api.themoviedb.org/3/$type/$id?api_key=$kfTMDBAPIKEY";
+
+String kfTMDBSearchCreditsUrl({required String type, required String id}) =>
+    "https://api.themoviedb.org/3/$type/$id/credits?api_key=$kfTMDBAPIKEY";
+
+String kfOMDBSearchMoviesOrSeriesUrl(
+        {required String query, required String? year, required String type}) =>
+    "http://www.omdbapi.com/?t=$query&apikey=f3ffdacf&type=$type&year=$year";
+
+String kfGetCastInformation({required castId}) =>
+    "https://api.themoviedb.org/3/person/$castId?api_key=727c59ab265fc8dfe32a7786b0cb2a96";
 
 const kfPrevButtonLabel = "Prev";
 const kfNextButtonLabel = "Next";
@@ -37,6 +66,8 @@ String kfMoviesDetailBaseUrl = "https://ww1.goojara.to";
 
 List<int> kfPopularMoviesIDs = List.generate(10, (index) => index + 60);
 List<int> kfPopularSeriesIDs = List.generate(10, (index) => index + 70);
+
+const int kfGenreHorrizontalIMages = 15;
 
 const List<Map<String, dynamic>> trendingNowMovies = [
   {
@@ -218,12 +249,12 @@ const List<Map<String, dynamic>> movies = [
     "url": "$kfMoviesBaseUrl-genre-Western",
     "id": 25
   },
-  {
-    "display_title": "Adults",
-    "genre": "adult",
-    "url": "$kfMoviesBaseUrl-genre-Adult",
-    "id": 26
-  },
+  // {
+  //   "display_title": "Adults",
+  //   "genre": "adult",
+  //   "url": "$kfMoviesBaseUrl-genre-Adult",
+  //   "id": 26
+  // },
 ];
 
 const List<Map<String, dynamic>> series = [
@@ -394,7 +425,6 @@ final List<Map<String, String>> genres = [
   {"name": 'Thriller', "path": "-genre-Thriller"},
   {"name": 'War', "path": "-genre-War"},
   {"name": 'Western', "path": "-genre-Western"},
-  {"name": 'Adult', "path": "-genre-Adult"}
 ];
 
 final List<Map<String, String>> category = [

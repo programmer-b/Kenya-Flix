@@ -34,7 +34,7 @@ class KFAppBarMenuComponent extends StatelessWidget {
                 kfTopAppBarMenu[index]['name'],
                 style: boldTextStyle(
                     color: index == selectedIndex ? Colors.black : Colors.white,
-                    size: 11),
+                    size: 9),
               )),
             ),
           ),

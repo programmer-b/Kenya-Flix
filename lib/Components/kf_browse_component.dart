@@ -83,6 +83,7 @@ class _KFBrowserComponentState extends State<KFBrowserComponent> {
     if (data == '') {
       await 1.seconds.delay;
       if (mounted) {
+        log("setting error because failed to load $url");
         context.read<KFProvider>().setError(true);
       }
     }
@@ -150,12 +151,11 @@ class _KFBrowserComponentState extends State<KFBrowserComponent> {
                       children: [
                         for (int i = 0; i < data.length; i++)
                           KFImageContainerComponent(
-                            urlImage: 'https:${data[i]['imageUrl'] ?? ''}',
-                            homeUrl: data[i]['homeUrl'] ?? '',
-                            query: data[i]['query'] ?? '',
-                            year: data[i]['year'] ?? '',
-                            type: isMovie ? "movie" : "tv"
-                          ).paddingAll(8),
+                              urlImage: 'https:${data[i]['imageUrl'] ?? ''}',
+                              homeUrl: data[i]['homeUrl'] ?? '',
+                              query: data[i]['query'] ?? '',
+                              year: data[i]['year'] ?? '',
+                              type: isMovie ? "movie" : "tv", customContraints: true, width: 90 , height: 140,),
                         KFPaginationComponent(
                           onPressedPrevButton: currentPage > 1
                               ? () => onPressedPrevButton()

@@ -30,17 +30,27 @@ class KFPaginationComponent extends StatelessWidget {
           ElevatedButton(
               style: kfButtonStyle(context),
               onPressed: onPressedPrevButton,
-              child: Text(
-                kfPrevButtonLabel,
-                style: boldTextStyle(color: Colors.white),
+              child: Center(
+                child: Text(
+                  kfPrevButtonLabel,
+                  style: boldTextStyle(
+                      color: onPressedPrevButton == null
+                          ? Colors.white
+                          : Colors.black),
+                ),
               )),
           6.width,
           ElevatedButton(
               style: kfButtonStyle(context),
               onPressed: onPressedNextButton,
-              child: Text(
-                kfNextButtonLabel,
-                style: boldTextStyle(color: Colors.white),
+              child: Center(
+                child: Text(
+                  kfNextButtonLabel,
+                  style: boldTextStyle(
+                      color: onPressedNextButton == null
+                          ? Colors.white
+                          : Colors.black),
+                ),
               ))
         ])
       ]),

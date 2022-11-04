@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kenyaflix/Commons/kf_menus.dart';
 import 'package:kenyaflix/Components/kf_app_bar_menu_component.dart';
-import 'package:kenyaflix/Components/kf_error_screen_component.dart';
+import 'package:kenyaflix/Fragments/kf_error_screen_fragment.dart';
 import 'package:kenyaflix/Components/kf_sliver_app_bar_component.dart';
 import 'package:kenyaflix/Provider/kf_provider.dart';
 import 'package:provider/provider.dart';

@@ -14,14 +14,24 @@ class KFImageContainerComponent extends StatelessWidget {
       this.trending = false,
       required this.type,
       required this.query,
-      required this.year})
-      : super(key: key);
+      required this.year,
+      this.customContraints,
+      this.height,
+      this.width})
+      : assert(
+            (customContraints == null && (width == null && height == null)) ||
+                customContraints != null && (width != null && height != null)),
+        super(key: key);
 
   final String urlImage;
   final String homeUrl;
   final String type;
   final String query;
   final String year;
+
+  final bool? customContraints;
+  final double? height;
+  final double? width;
 
   final bool trending;
 
@@ -36,21 +46,29 @@ class KFImageContainerComponent extends StatelessWidget {
       ).launch(context),
       child: CachedNetworkImage(
         key: UniqueKey(),
+        fadeInCurve: Curves.bounceIn,
+        fadeInDuration: const Duration(microseconds: 50),
         imageUrl: urlImage,
         imageBuilder: (_, image) => Card(
           elevation: 5,
           child: Container(
-            height: trending
-                ? trendingImageHeightDimen
-                : defaultGenreImageHeightDimen,
-            width: trending
-                ? trendingImageWidthDimen
-                : defaultGenreImageWidthDimen,
+            height: customContraints ?? false
+                ? height
+                : trending
+                    ? trendingImageHeightDimen
+                    : defaultGenreImageHeightDimen,
+            width: customContraints ?? false
+                ? width
+                : trending
+                    ? trendingImageWidthDimen
+                    : defaultGenreImageWidthDimen,
             decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.yellow,
-                  width: 0.1,
-                ),
+                border: trending
+                    ? null
+                    : Border.all(
+                        color: Colors.yellow,
+                        width: 0.1,
+                      ),
                 image: DecorationImage(image: image, fit: BoxFit.fill),
                 borderRadius: const BorderRadius.all(Radius.circular(5))),
           ),

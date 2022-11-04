@@ -1,16 +1,14 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:kenyaflix/Commons/kf_strings.dart';
-import 'package:kenyaflix/Components/kf_error_screen_component.dart';
+import 'package:kenyaflix/Fragments/kf_error_screen_fragment.dart';
 import 'package:kenyaflix/Components/kf_movie_detail_component.dart';
+import 'package:kenyaflix/Components/kf_movie_information_builder.dart';
+import 'package:kenyaflix/Fragments/kf_movie_not_found_fragment.dart';
+import 'package:kenyaflix/Components/kf_no_connection_component.dart';
 import 'package:kenyaflix/Components/kf_sliver_app_bar_component.dart';
-import 'package:kenyaflix/Database/kf_movie_database.dart';
-import 'package:kenyaflix/Models/kf_movie_model.dart';
 import 'package:kenyaflix/Provider/kf_provider.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
-
-import '../Utils/kf_networking.dart';
 
 class KFMovieDetailScreen extends StatefulWidget {
   const KFMovieDetailScreen(
@@ -29,35 +27,29 @@ class KFMovieDetailScreen extends StatefulWidget {
   State<KFMovieDetailScreen> createState() => _KFMovieDetailScreenState();
 }
 
-class _KFMovieDetailScreenState extends State<KFMovieDetailScreen> {
-  late ScrollController? controller;
-  late final String url;
+class _KFMovieDetailScreenState extends State<KFMovieDetailScreen>
+    with SingleTickerProviderStateMixin {
+  late ScrollController scrollController;
+  late TabController tabController;
+
+  late final String homeUrl = widget.homeUrl;
+  late final String url =
+      homeUrl.startsWith('/') ? '$baseUrl$homeUrl' : homeUrl;
+  late final String query = widget.query;
+
+  late final String? year = widget.year;
+
+  String type = 'movie';
 
   int get id => kfmovieDetailSecondaryID;
   String get baseUrl => kfMoviesDetailBaseUrl;
 
-  Future<void> _downloadAndStoreMovieDatailsOnID() async {
-    log('HOME URL: $url');
-    await KFMovieDatabase.instance.delete(id);
-    final data =
-        await fetchMoviesAndSeries(url.startsWith('/') ? '$baseUrl$url' : url);
-    log(url.startsWith('/') ? '$baseUrl$url' : url);
-    if (data != '') {
-      final details = KFMovieModel(
-          id: id,
-          genreGeneratedMovieData: data,
-          tmdbID: 0,
-          year: "null",
-          backdropsPath: "null",
-          posterPath: "null",
-          releaseDate: "null",
-          overview: "null",
-          title: "null",
-          homeUrl: "null");
-      await KFMovieDatabase.instance.create(details);
-    } else {
-      if (mounted) context.read<KFProvider>().setError(true);
-    }
+  Future<void> _initializeDetails() async {
+    final provider = context.read<KFProvider>();
+    await Future.delayed(Duration.zero, () async {
+      provider.initMovieDetails();
+      provider.initializeMovieDetails(query: query, year: year, type: type);
+    });
   }
 
   @override
@@ -67,37 +59,128 @@ class _KFMovieDetailScreenState extends State<KFMovieDetailScreen> {
   }
 
   Future<void> init() async {
-    controller = ScrollController();
-    url = widget.homeUrl;
-    await _downloadAndStoreMovieDatailsOnID();
+    scrollController = ScrollController();
+    type = widget.type;
+
+    tabController =
+        TabController(length: _appbarInfoTabs().length, vsync: this);
+    tabController.addListener(() => setState(() {}));
+
+    await _initializeDetails();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    scrollController.dispose();
+    tabController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Scaffold(
-          body: Consumer<KFProvider>(
-            builder: (context, provider, child) {
-              return provider.contentLoadError
-                  ? const KFErrorScreenComponent()
-                  : CustomScrollView(
-                      controller: controller,
-                      slivers: <Widget>[
-                        _appBar(),
-                        const KFMovieDetailComponent()
-                      ],
-                    );
-            },
-          ),
-        ));
+    return FutureBuilder<bool>(
+        future: isNetworkAvailable(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            if (snapshot.data ?? false) {
+              return Consumer<KFProvider>(builder: (context, provider, child) {
+                if (provider.didChangeType) {
+                  Future.delayed(
+                      Duration.zero,
+                      () => setState(
+                            () {
+                              type == 'movie' ? type = 'tv' : type = 'movie';
+                            },
+                          ));
+                }
+                return provider.contentLoadError
+                    ? const KFErrorScreenComponent()
+                    : provider.notFound
+                        ? KFMovieNotFoundComponent(url: url)
+                        : Scaffold(
+                            backgroundColor: Colors.transparent,
+                            body: CustomScrollView(
+                              controller: scrollController,
+                              slivers: <Widget>[
+                                _detailAppBar(),
+                                KFMovieDetailComponent(
+                                  isMovie: type == 'movie',
+                                ),
+                                if (provider.tmdbSearchVideoLoaded)
+                                  _informationAppBar(provider
+                                      .kfTMDBSearchTVResultsById
+                                      ?.numberOfEpisodes
+                                      .toString()),
+                                if (provider.tmdbSearchVideoLoaded)
+                                  KFMovieInformationBuilder(
+                                      isMovie: type == 'movie',
+                                      controller: tabController)
+                              ],
+                            ));
+              });
+            } else {
+              return const KFNoConnectionComponent();
+            }
+          }
+          return snapWidgetHelper(snapshot);
+        });
   }
 
-  Widget _appBar() => const KFSliverAppBarComponent(
+  Widget _detailAppBar() => const KFSliverAppBarComponent(
+        backgroundColor: Colors.black,
         pinned: true,
         snap: false,
         floating: true,
-        expandedHeight: 90,
+        expandedHeight: 50,
+        elevation: 0.0,
         automaticallyImplyLeading: true,
       );
+
+  Widget _informationAppBar(String? numberOfEpisodes) =>
+      KFSliverAppBarComponent(
+        backgroundColor: Colors.black,
+        showTopMenu: false,
+        automaticallyImplyLeading: false,
+        pinned: true,
+        actions: null,
+        title: Column(
+          children: [
+            TabBar(
+              isScrollable: true,
+              labelStyle: boldTextStyle(),
+              controller: tabController,
+              padding: EdgeInsets.zero,
+              indicatorColor: Colors.white,
+              indicatorSize: TabBarIndicatorSize.tab,
+              tabs: _appbarInfoTabs(numberOfEpisodes: numberOfEpisodes),
+            ),
+            Container(
+              width: double.infinity,
+              height: 1.5,
+              color: Colors.white,
+            )
+          ],
+        ),
+      );
+
+  List<Tab> _appbarInfoTabs({String? numberOfEpisodes}) => type == 'movie'
+      ? const [
+          Tab(
+            text: "Related",
+          ),
+          Tab(
+            text: "More Details",
+          )
+        ]
+      : [
+          Tab(
+              text:
+                  "Episodes ${numberOfEpisodes != null ? "($numberOfEpisodes)" : ""}"),
+          const Tab(
+            text: "Explore",
+          ),
+          const Tab(
+            text: "More Details",
+          )
+        ];
 }

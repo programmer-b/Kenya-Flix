@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:kenyaflix/Components/kf_header_carousel_builder_component.dart';
 import 'package:kenyaflix/Components/kf_movie_data_component.dart';
 import 'package:kenyaflix/Components/kf_movie_header_component.dart';
+import 'package:kenyaflix/Fragments/kf_header_carousel_fragment.dart';
 import 'package:nb_utils/nb_utils.dart' hide log;
 
 import '../../Commons/kf_strings.dart';
@@ -22,8 +22,7 @@ class _KFMoviesCategoryFragmentState extends State<KFMoviesCategoryFragment> {
         (BuildContext context, int index) {
           return Column(
             children: [
-              if (index == 0)
-                const KFHeaderCarouselBuilderComponent(isMovie: true),
+              if (index == 0) const KFHeaderCarouselFragment(isMovie: true),
               if (index == 0) const KFMovieHeaderComponent(isMovie: true),
               KFMovieDataComponent(index: index, isMovie: true)
             ],

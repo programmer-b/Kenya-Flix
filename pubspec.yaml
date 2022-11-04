@@ -51,6 +51,13 @@ dependencies:
   dropdown_search: ^5.0.3
   carousel_slider: ^4.1.1
   smooth_page_indicator: ^1.0.0+2
+  material_design_icons_flutter: ^5.0.6996
+  google_fonts: ^3.0.1
+  dio: ^4.0.6
+  contained_tab_bar_view: ^0.8.0
+  fast_cached_network_image: ^1.0.1
+  flutter_cache_manager: ^3.3.0
+
  
 
 dev_dependencies:
@@ -79,6 +86,7 @@ flutter:
   assets:
     - assets/videos/video.mp4
     - assets/images/kenya_flix_logo.png
+    - assets/images/play_arrow_FILL0_wght400_GRAD0_opsz48.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -92,10 +100,10 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
+  fonts:
+    - family: KFCustomIcons
+      fonts:
+        - asset: fonts/MyFlutterApp.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

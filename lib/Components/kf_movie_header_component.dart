@@ -57,6 +57,8 @@ class _KFMovieHeaderComponentState extends State<KFMovieHeaderComponent> {
             }
           }
           if (snapshot.hasError) {
+                        log("setting error because snapshot has error: ${snapshot.error}");
+
             provider.setError(true);
           }
           return loadingWidget(trending: true);

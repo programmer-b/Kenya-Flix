@@ -27,10 +27,10 @@ class _KFErrorScreenComponentState extends State<KFErrorScreenComponent> {
           10.height,
           ElevatedButton(
             onPressed: () => RestartAppWidget.init(context),
-             style: kfButtonStyle(context),
+            style: kfButtonStyle(context),
             child: Text(
               "Retry",
-              style: boldTextStyle(color: kfPrimaryTextColor),
+              style: boldTextStyle(color: Colors.black),
             ),
           )
         ],

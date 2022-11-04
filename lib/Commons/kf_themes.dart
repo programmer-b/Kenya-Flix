@@ -1,17 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:kenyaflix/Commons/kf_colors.dart';
+import 'package:nb_utils/nb_utils.dart';
 
 ThemeData? kfMainTheme = ThemeData(
+    fontFamily: "KFCustomIcons",
     primarySwatch: Colors.red,
     brightness: Brightness.dark,
-    scaffoldBackgroundColor: kfScaffoldBackgroundColor);
+    scaffoldBackgroundColor: kfScaffoldBackgroundColor,
+    floatingActionButtonTheme:
+        const FloatingActionButtonThemeData(backgroundColor: Colors.white));
+
 ButtonStyle? kfButtonStyle(context) => ButtonStyle(
-  backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-    (Set<MaterialState> states) {
-      if (states.contains(MaterialState.pressed)) {
-        return Theme.of(context).colorScheme.primary.withOpacity(0.5);
-      }
-      return null; // Use the component's default.
-    },
-  ),
-);
+      textStyle: MaterialStateProperty.resolveWith<TextStyle>((states) {
+        return boldTextStyle(
+            color: states.contains(MaterialState.disabled)
+                ? Colors.white
+                : Colors.black);
+      }),
+      backgroundColor: MaterialStateProperty.resolveWith<Color?>(
+        (Set<MaterialState> states) {
+          if (states.contains(MaterialState.disabled)) {
+            return Colors.white24;
+          }
+          return Colors.white;
+        },
+      ),
+    );
