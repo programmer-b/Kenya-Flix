@@ -1,67 +1,37 @@
-
-import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
-import 'package:nb_utils/nb_utils.dart' hide log;
-import 'package:kenyaflix/Commons/kf_video_player_configurations.dart';
+import 'package:provider/provider.dart';
+
+import '../Provider/kf_provider.dart';
 
 class KFVideoPlayerScreen extends StatefulWidget {
-  const KFVideoPlayerScreen(
-      {Key? key,
-      required this.betterPlayerDataSource,
-      required this.title})
-      : super(key: key);
-  final BetterPlayerDataSource betterPlayerDataSource;
-  final String title;
+  const KFVideoPlayerScreen({
+    Key? key,
+    required this.masterUrl,
+  }) : super(key: key);
 
+  final Uri masterUrl;
   @override
   State<KFVideoPlayerScreen> createState() => _KFVideoPlayerScreenState();
 }
 
 class _KFVideoPlayerScreenState extends State<KFVideoPlayerScreen> {
-  late BetterPlayerController _betterPlayerController;
-
   @override
   void initState() {
     super.initState();
-    init();
+    Future.delayed(
+        Duration.zero, () => context.read<KFProvider>().initMovieDetails());
   }
 
-  Future<void> init() async {
-    enterFullScreen();
-    setOrientationLandscape();
-    _betterPlayerController = BetterPlayerController(
-        betterPlayerConfiguration(context),
-        betterPlayerDataSource: widget.betterPlayerDataSource);
-  }
-
-  @override
-  void dispose() {
-    exitFullScreen();
-    setOrientationPortrait();
-    _betterPlayerController.dispose();
-    super.dispose();
-  }
-
-  bool automaticallyImplyLeading = false;
   @override
   Widget build(BuildContext context) {
     return OrientationBuilder(builder: (context, orientation) {
-      if (orientation == Orientation.landscape) {
-        automaticallyImplyLeading = false;
-      } else {
-        automaticallyImplyLeading = true;
-      }
       return Scaffold(
         extendBody: true,
         extendBodyBehindAppBar: true,
         appBar: AppBar(
-          automaticallyImplyLeading: automaticallyImplyLeading,
-          centerTitle: true,
-          title: Text(widget.title),
-          backgroundColor: Colors.transparent,
-          elevation: 0.0,
+          title: const Text("Video Player"),
         ),
-        body: BetterPlayer(controller: _betterPlayerController),
+        body: Text(widget.masterUrl.toString()),
       );
     });
   }

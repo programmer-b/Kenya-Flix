@@ -310,4 +310,19 @@ class KFProvider with ChangeNotifier {
 
     getEpisodes();
   }
+
+  ///Here is video player configs and their state management
+
+  Uri? _masterUrl;
+  Uri? get masterUrl => _masterUrl;
+
+  void initVideoConfigs() {
+    _masterUrl = null;
+    notifyListeners();
+  }
+
+  void masterUrlSet(Uri url) {
+    _masterUrl = url;
+    notifyListeners();
+  }
 }

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:kenyaflix/Commons/kf_strings.dart';
+import 'package:kenyaflix/Components/kf_web_component.dart';
 import 'package:kenyaflix/Fragments/kf_error_screen_fragment.dart';
 import 'package:kenyaflix/Components/kf_movie_detail_component.dart';
 import 'package:kenyaflix/Components/kf_movie_information_builder.dart';
 import 'package:kenyaflix/Fragments/kf_movie_not_found_fragment.dart';
-import 'package:kenyaflix/Components/kf_no_connection_component.dart';
 import 'package:kenyaflix/Components/kf_sliver_app_bar_component.dart';
 import 'package:kenyaflix/Provider/kf_provider.dart';
+import 'package:kenyaflix/Screens/kf_video_player_screen.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 
@@ -67,6 +68,9 @@ class _KFMovieDetailScreenState extends State<KFMovieDetailScreen>
     tabController.addListener(() => setState(() {}));
 
     await _initializeDetails();
+
+    Future.delayed(
+        Duration.zero, () => context.read<KFProvider>().initMovieDetails());
   }
 
   @override
@@ -78,33 +82,43 @@ class _KFMovieDetailScreenState extends State<KFMovieDetailScreen>
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<bool>(
-        future: isNetworkAvailable(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            if (snapshot.data ?? false) {
-              return Consumer<KFProvider>(builder: (context, provider, child) {
-                if (provider.didChangeType) {
-                  Future.delayed(
-                      Duration.zero,
-                      () => setState(
-                            () {
-                              type == 'movie' ? type = 'tv' : type = 'movie';
-                            },
-                          ));
-                }
-                return provider.contentLoadError
-                    ? const KFErrorScreenComponent()
-                    : provider.notFound
-                        ? KFMovieNotFoundComponent(url: url)
-                        : Scaffold(
-                            backgroundColor: Colors.transparent,
-                            body: CustomScrollView(
+        final masterUrl = context.watch<KFProvider>().masterUrl;
+
+    if (masterUrl != null) {
+      finish(context);
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        KFVideoPlayerScreen(
+          masterUrl: masterUrl,
+        ).launch(context);
+      });
+    }
+    return Consumer<KFProvider>(builder: (context, provider, child) {
+      if (provider.didChangeType) {
+        Future.delayed(
+            Duration.zero,
+            () => setState(
+                  () {
+                    type == 'movie' ? type = 'tv' : type = 'movie';
+                  },
+                ));
+      }
+      return provider.contentLoadError
+          ? const KFErrorScreenComponent()
+          : provider.notFound
+              ? KFMovieNotFoundComponent(url: url)
+              : Scaffold(
+                  backgroundColor: Colors.transparent,
+                  body: FutureBuilder<bool>(
+                      future: isNetworkAvailable(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          if (snapshot.data ?? false) {
+                            return CustomScrollView(
                               controller: scrollController,
                               slivers: <Widget>[
                                 _detailAppBar(),
                                 KFMovieDetailComponent(
-                                  isMovie: type == 'movie',
+                                  isMovie: type == 'movie', homeUrl: homeUrl
                                 ),
                                 if (provider.tmdbSearchVideoLoaded)
                                   _informationAppBar(provider
@@ -116,14 +130,13 @@ class _KFMovieDetailScreenState extends State<KFMovieDetailScreen>
                                       isMovie: type == 'movie',
                                       controller: tabController)
                               ],
-                            ));
-              });
-            } else {
-              return const KFNoConnectionComponent();
-            }
-          }
-          return snapWidgetHelper(snapshot);
-        });
+                            );
+                          }
+                        }
+                        return snapWidgetHelper(snapshot,
+                            loadingWidget: const CircularProgressIndicator());
+                      }));
+    });
   }
 
   Widget _detailAppBar() => const KFSliverAppBarComponent(
