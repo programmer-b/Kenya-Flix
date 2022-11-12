@@ -1,14 +1,14 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:kenyaflix/Commons/kf_strings.dart';
-import 'package:kenyaflix/Components/kf_web_component.dart';
 import 'package:kenyaflix/Fragments/kf_error_screen_fragment.dart';
 import 'package:kenyaflix/Components/kf_movie_detail_component.dart';
 import 'package:kenyaflix/Components/kf_movie_information_builder.dart';
 import 'package:kenyaflix/Fragments/kf_movie_not_found_fragment.dart';
 import 'package:kenyaflix/Components/kf_sliver_app_bar_component.dart';
 import 'package:kenyaflix/Provider/kf_provider.dart';
-import 'package:kenyaflix/Screens/kf_video_player_screen.dart';
-import 'package:nb_utils/nb_utils.dart';
+import 'package:nb_utils/nb_utils.dart' hide log;
 import 'package:provider/provider.dart';
 
 class KFMovieDetailScreen extends StatefulWidget {
@@ -82,16 +82,8 @@ class _KFMovieDetailScreenState extends State<KFMovieDetailScreen>
 
   @override
   Widget build(BuildContext context) {
-        final masterUrl = context.watch<KFProvider>().masterUrl;
+    log("HOME URL: $url");
 
-    if (masterUrl != null) {
-      finish(context);
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        KFVideoPlayerScreen(
-          masterUrl: masterUrl,
-        ).launch(context);
-      });
-    }
     return Consumer<KFProvider>(builder: (context, provider, child) {
       if (provider.didChangeType) {
         Future.delayed(
@@ -107,7 +99,7 @@ class _KFMovieDetailScreenState extends State<KFMovieDetailScreen>
           : provider.notFound
               ? KFMovieNotFoundComponent(url: url)
               : Scaffold(
-                  backgroundColor: Colors.transparent,
+                  backgroundColor: Colors.black,
                   body: FutureBuilder<bool>(
                       future: isNetworkAvailable(),
                       builder: (context, snapshot) {
@@ -118,8 +110,7 @@ class _KFMovieDetailScreenState extends State<KFMovieDetailScreen>
                               slivers: <Widget>[
                                 _detailAppBar(),
                                 KFMovieDetailComponent(
-                                  isMovie: type == 'movie', homeUrl: homeUrl
-                                ),
+                                    isMovie: type == 'movie', homeUrl: url),
                                 if (provider.tmdbSearchVideoLoaded)
                                   _informationAppBar(provider
                                       .kfTMDBSearchTVResultsById
@@ -128,7 +119,7 @@ class _KFMovieDetailScreenState extends State<KFMovieDetailScreen>
                                 if (provider.tmdbSearchVideoLoaded)
                                   KFMovieInformationBuilder(
                                       isMovie: type == 'movie',
-                                      controller: tabController)
+                                      controller: tabController, homeUrl: url,)
                               ],
                             );
                           }

@@ -1,14 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fade_shimmer/fade_shimmer.dart';
 import 'package:flutter/material.dart';
+import 'package:kenyaflix/Commons/kf_strings.dart';
 import 'package:kenyaflix/Provider/kf_provider.dart';
 import 'package:provider/provider.dart';
 
 class KFImageBuilder extends StatelessWidget {
   const KFImageBuilder({Key? key}) : super(key: key);
   
-  get kfOriginalTMDBImageUrl => null;
-
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -19,7 +18,7 @@ class KFImageBuilder extends StatelessWidget {
             ? CachedNetworkImage(
                 key: UniqueKey(),
                 imageUrl:
-                    "$kfOriginalTMDBImageUrl${value.kfTMDBSearchResults?.results?[0]?.backdropPath ?? value.kfTMDBSearchResults?.results?[0]?.profilePath}",
+                    "$kfOriginalTMDBImageUrl${value.kfTMDBSearchResults?.results?[0]?.backdropPath ?? value.kfTMDBSearchResults?.results?[0]?.posterPath}",
                 height: height,
                 width: width,
                 fit: BoxFit.cover,

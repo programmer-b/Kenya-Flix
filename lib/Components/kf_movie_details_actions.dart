@@ -1,18 +1,17 @@
 import 'package:fade_shimmer/fade_shimmer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:kenyaflix/Components/kf_video_loading_component.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:nb_utils/nb_utils.dart';
+import 'package:nb_utils/nb_utils.dart' hide log;
 import 'package:provider/provider.dart';
 
 import '../Commons/kf_colors.dart';
 import '../Provider/kf_provider.dart';
 import 'kf_build_details_action_bar.dart';
 import 'kf_common_components.dart';
-import 'kf_web_component.dart';
 
-class kFMovieDetailActions extends StatelessWidget {
-  const kFMovieDetailActions(this.isMovie, {required this.homeUrl});
+class KFMovieDetailActions extends StatelessWidget {
+  const KFMovieDetailActions(this.isMovie, {super.key, required this.homeUrl});
 
   final bool isMovie;
   final String homeUrl;
@@ -20,6 +19,7 @@ class kFMovieDetailActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+
     return Consumer<KFProvider>(builder: (context, value, child) {
       return value.tmdbSearchVideoLoaded
           ? Container(
@@ -30,10 +30,14 @@ class kFMovieDetailActions extends StatelessWidget {
                     width: width,
                     height: 50,
                     child: ElevatedButton(
-                      onPressed: () => showDialog(
-                        context: context,
-                        builder: (context) => _loadingWidget(context, homeUrl),
-                      ),
+                      onPressed: () async {
+                        await showDialog(
+                            context: context,
+                            builder: (context) => KFVideoLoadingComponent(
+                                  homeUrl: homeUrl,
+                                  isMovie: true,
+                                ));
+                      },
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
@@ -47,8 +51,8 @@ class kFMovieDetailActions extends StatelessWidget {
                           ),
                           8.width,
                           Text(
-                            "Watch Now ${isMovie ? "" : "S1 E1"}",
-                            style: primaryTextStyle(color: Colors.black),
+                            "Watch Now ${isMovie ?"": "S${value.kfTMDBSearchTVResultsById?.numberOfSeasons} E1"}",
+                            style: boldTextStyle(color: Colors.black),
                             textAlign: TextAlign.center,
                           ),
                         ],
@@ -73,10 +77,10 @@ class kFMovieDetailActions extends StatelessWidget {
                             Icons.file_download_outlined,
                             color: Colors.white,
                           ),
-                          4.width,
+                          12.width,
                           Text(
-                            "Download ${isMovie ? "" : "S1 E1"}",
-                            style: primaryTextStyle(color: Colors.white),
+                            "Download",
+                            style: boldTextStyle(color: Colors.white),
                             textAlign: TextAlign.center,
                           ),
                         ],
@@ -106,27 +110,6 @@ class kFMovieDetailActions extends StatelessWidget {
             );
     });
   }
-
-  final _spinkit = const SpinKitFadingCircle(
-    color: Colors.white,
-  );
-
-  Widget _loadingWidget(context, url) => Stack(
-        children: [
-          Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            color: Colors.transparent,
-            child: _spinkit.center(),
-          ).center(),
-          _web(url)
-        ],
-      );
-
-  Widget _web(String url) => Offstage(
-        offstage: false,
-        child: WebComponent(url: url),
-      );
 
   Widget _movieDetailsActionBarPlaceHolder(width) => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

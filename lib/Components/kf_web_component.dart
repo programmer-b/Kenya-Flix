@@ -3,16 +3,21 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:html/parser.dart';
-import 'package:provider/provider.dart';
+import 'package:kenyaflix/Commons/kf_keys.dart';
+import 'package:nb_utils/nb_utils.dart' hide log;
 
-import '../Provider/kf_provider.dart';
+import '../Screens/kf_video_player_screen.dart';
 
 class WebComponent extends StatefulWidget {
   const WebComponent(
-      {super.key, this.webViewPopupController, required this.url});
+      {super.key,
+      this.webViewPopupController,
+      required this.url,
+      this.supportMultipleWindows = true});
 
   final InAppWebViewController? webViewPopupController;
   final String url;
+  final bool supportMultipleWindows;
 
   @override
   State<WebComponent> createState() => _WebComponentState();
@@ -21,27 +26,29 @@ class WebComponent extends StatefulWidget {
 class _WebComponentState extends State<WebComponent> {
   late String url = widget.url;
 
+  bool get webAccessed => getBoolAsync(keyWebAccessed);
+  int urlHit = 0;
+
   InAppWebViewController? webViewController;
-  final InAppWebViewGroupOptions options = InAppWebViewGroupOptions(
-      crossPlatform: InAppWebViewOptions(
-        useShouldOverrideUrlLoading: true,
-        mediaPlaybackRequiresUserGesture: false,
-        javaScriptCanOpenWindowsAutomatically: true,
-      ),
-      android: AndroidInAppWebViewOptions(
-          supportMultipleWindows: false, useShouldInterceptRequest: true));
+  InAppWebViewGroupOptions options() =>
+      InAppWebViewGroupOptions(
+          crossPlatform: InAppWebViewOptions(
+            // useShouldOverrideUrlLoading: false,
+            // mediaPlaybackRequiresUserGesture: false,
+            javaScriptCanOpenWindowsAutomatically: true,
+          ),
+          android: AndroidInAppWebViewOptions(
+              supportMultipleWindows: widget.supportMultipleWindows, useShouldInterceptRequest: true));
 
   final InAppWebViewGroupOptions options2 = InAppWebViewGroupOptions(
       crossPlatform: InAppWebViewOptions(
         useShouldOverrideUrlLoading: true,
-        mediaPlaybackRequiresUserGesture: false,
-        // javaScriptCanOpenWindowsAutomatically: true,
+        // mediaPlaybackRequiresUserGesture: false,
+        javaScriptCanOpenWindowsAutomatically: true,
         useShouldInterceptAjaxRequest: true,
         // useShouldInterceptFetchRequest: true
       ),
-      android: AndroidInAppWebViewOptions(
-          // supportMultipleWindows: true,
-          useShouldInterceptRequest: true));
+      android: AndroidInAppWebViewOptions(useShouldInterceptRequest: true));
 
   Widget _web() => InAppWebView(
         initialUrlRequest: URLRequest(url: Uri.parse(url)),
@@ -54,9 +61,13 @@ class _WebComponentState extends State<WebComponent> {
           final uri = request.url;
           final params = uri.queryParameters;
 
-          if (params["usr"] != null) {
+          if (params["usr"] != null && widget.supportMultipleWindows) {
             log("$uri");
-            context.read<KFProvider>().masterUrlSet(uri);
+            finish(context);
+            KFVideoPlayerScreen(
+              masterUrl: "$uri",
+            ).launch(context);
+            await setValue(keyWebAccessed, true);
           }
 
           return null;
@@ -77,7 +88,8 @@ class _WebComponentState extends State<WebComponent> {
                 controller
                     .loadUrl(
                         urlRequest: URLRequest(url: Uri.parse(masterUrl ?? "")))
-                    .then((value) => controller.setOptions(options: options));
+                    .then((value) => controller.setOptions(
+                        options: options()));
               }
             }
           }
@@ -101,10 +113,17 @@ class _WebComponentState extends State<WebComponent> {
           return ServerTrustAuthResponse(
               action: ServerTrustAuthResponseAction.PROCEED);
         },
-        onLoadStart: (controller, url) {},
+        onLoadStart: (controller, url) {
+          if ("$url".contains("prime")) {
+            controller
+                .loadUrl(urlRequest: URLRequest(url: Uri.parse(this.url)))
+                .then((value) => controller.setOptions(options: options2));
+          }
+        },
         shouldOverrideUrlLoading: (controller, navigationAction) async {
-          // var uri = navigationAction.request.body;
-          // log("shouldOverrideUrlLoading: $uri");
+          var uri = navigationAction.request.body;
+
+          log("shouldOverrideUrlLoading: $uri");
 
           return NavigationActionPolicy.CANCEL;
         },

@@ -1,4 +1,6 @@
 import 'package:flutter/cupertino.dart';
+import 'package:html/dom.dart';
+import 'package:html/parser.dart';
 import 'package:http/http.dart';
 
 extension GetConstraits on Map<String, dynamic> {
@@ -68,4 +70,8 @@ extension SnapshotLoaded on AsyncSnapshot {
   bool get loaded {
     return connectionState == ConnectionState.done;
   }
+}
+
+extension ConvertToDocument on String {
+  Document get document => parse(this);
 }

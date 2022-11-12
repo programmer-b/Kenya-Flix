@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kenyaflix/Commons/kf_strings.dart';
-import 'package:kenyaflix/Components/kf_Image_builder.dart';
+import 'package:kenyaflix/Components/kf_image_builder.dart';
+import 'package:kenyaflix/Components/kf_movie_details_actions.dart';
 import 'package:kenyaflix/Components/kf_title_builder.dart';
 import 'package:kenyaflix/Models/kf_tmdb_search_model.dart';
 import 'package:nb_utils/nb_utils.dart' hide log;
@@ -48,7 +49,7 @@ class _KFMovieDetailComponentState extends State<KFMovieDetailComponent> {
   List<Widget> _delegates(bool isMovie) => [
         const KFImageBuilder(),
         const KFTitleBuilder(),
-        KFMovieDetailComponent(isMovie: isMovie, homeUrl: homeUrl),
+        KFMovieDetailActions(isMovie, homeUrl: homeUrl),
         const KFOptionalDetailsBar(),
       ];
 }

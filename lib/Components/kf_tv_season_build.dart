@@ -7,7 +7,8 @@ import 'package:provider/provider.dart';
 import 'kf_episode_info_list.dart';
 
 class KFTVSeasonBuild extends StatelessWidget {
-  const KFTVSeasonBuild({Key? key}) : super(key: key);
+  const KFTVSeasonBuild({Key? key, required this.homeUrl}) : super(key: key);
+  final String homeUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,9 @@ class KFTVSeasonBuild extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (numberOfSeasons > 1) _seasonButtonBuild(value, context),
-                  KFEpisodesInfoList()
+                  KFEpisodesInfoList(
+                      currentSeason: "${value.currentSeason}",
+                      homeUrl: homeUrl),
                 ],
               )
             : Container();

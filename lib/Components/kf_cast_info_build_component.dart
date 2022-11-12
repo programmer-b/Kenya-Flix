@@ -25,7 +25,7 @@ class KFCastInfoBuildComponent extends StatelessWidget {
             children: [
               Container(
                 width: width,
-                height: height * 1.25,
+                height: height * 2.0,
                 margin: const EdgeInsets.only(bottom: 20),
                 decoration: BoxDecoration(
                     color: Colors.black,
@@ -43,7 +43,8 @@ class KFCastInfoBuildComponent extends StatelessWidget {
                   decoration: const BoxDecoration(
                     gradient: LinearGradient(colors: [
                       Color(0x11000000),
-                      Color(0x99000000),
+                       Color(0x77000000),
+                      Color(0xcc000000),
                       Colors.black
                     ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
                   ),

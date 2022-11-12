@@ -4,6 +4,7 @@ import 'package:kenyaflix/Commons/kf_extensions.dart';
 import 'package:kenyaflix/Commons/kf_strings.dart';
 import 'package:kenyaflix/Components/kf_common_components.dart';
 import 'package:kenyaflix/Components/kf_episode_image_build_component.dart';
+import 'package:kenyaflix/Components/kf_video_loading_component.dart';
 import 'package:kenyaflix/Provider/kf_provider.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
@@ -11,7 +12,11 @@ import 'package:provider/provider.dart';
 import '../Commons/kf_functions.dart';
 
 class KFEpisodesInfoList extends StatelessWidget {
-  KFEpisodesInfoList({Key? key}) : super(key: key);
+  KFEpisodesInfoList(
+      {Key? key, required this.homeUrl, required this.currentSeason})
+      : super(key: key);
+  final String homeUrl;
+  final String currentSeason;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +25,7 @@ class KFEpisodesInfoList extends StatelessWidget {
 
     return Consumer<KFProvider>(builder: (context, value, child) {
       return value.kfEpisodes != null
-          ? _buildEpisodeInfo(width, value)
+          ? _buildEpisodeInfo(width, value, context)
           : Column(
               children: [
                 for (int i = 0; i < 5; i++) _episodeInfoPlaceHolder(width)
@@ -29,7 +34,7 @@ class KFEpisodesInfoList extends StatelessWidget {
     });
   }
 
-  Widget _buildEpisodeInfo(double width, KFProvider value) {
+  Widget _buildEpisodeInfo(double width, KFProvider value, BuildContext context) {
     String? imageUrl = "";
     dynamic runTime = 0;
     int episodeNumber = 0;
@@ -40,52 +45,69 @@ class KFEpisodesInfoList extends StatelessWidget {
     return Column(
       children: [
         for (int index = 0; index < episodesList.length; index++)
-          Builder(builder: (context) {
-            imageUrl =
-                episodesList[index].stillPath ?? value.kfEpisodes?.posterPath;
-            runTime =
-                episodesList[index].runtime ?? episodesList[index].name ?? 0;
-            episodeNumber = episodesList[index].episodeNumber ?? 0;
-            overview = episodesList[index].overview ?? "";
+          GestureDetector(
+            onTap: () => showDialog(
+                context: context,
+                builder: (context) => KFVideoLoadingComponent(
+                      homeUrl: homeUrl,
+                      currentSeason: currentSeason,
+                      episodeIndex: index,
+                      isMovie: false,
+                    )),
+            child: Builder(builder: (context) {
+              imageUrl =
+                  episodesList[index].stillPath ?? value.kfEpisodes?.posterPath;
+              runTime =
+                  episodesList[index].runtime ?? episodesList[index].name ?? 0;
+              episodeNumber = episodesList[index].episodeNumber ?? 0;
+              overview = episodesList[index].overview ?? "";
 
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          KFEpisodeImageBuildComponent(
-                              width: width * 0.3, height: 90, path: imageUrl),
-                          12.width,
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _titleBulder(index + 1, episodeNumber),
-                              4.height,
-                              _runTimeBuilder(runTime, width * 0.4)
-                            ],
-                          )
-                        ],
-                      ),
-                      IconButton(
-                          onPressed: () {},
-                          icon: const Icon(
-                            Icons.file_download_outlined,
-                            color: Colors.white,
-                            size: 30,
-                          ))
-                    ],
-                  ),
-                  6.height,
-                  _descriptionBuilder(overview)
-                ],
-              ),
-            );
-          }),
+              return Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            KFEpisodeImageBuildComponent(
+                              width: width * 0.3,
+                              height: 90,
+                              path: imageUrl,
+                              homeUrl: homeUrl,
+                              index: index,
+                              currentSeason: currentSeason,
+                            ),
+                            12.width,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _titleBulder(index + 1, episodeNumber),
+                                4.height,
+                                _runTimeBuilder(runTime, width * 0.4)
+                              ],
+                            )
+                          ],
+                        ),
+                        IconButton(
+                            onPressed: () {},
+                            icon: const Icon(
+                              Icons.file_download_outlined,
+                              color: Colors.white,
+                              size: 30,
+                            ))
+                      ],
+                    ),
+                    6.height,
+                    _descriptionBuilder(overview)
+                  ],
+                ),
+              );
+            }),
+          ),
       ],
     );
   }

@@ -350,14 +350,14 @@ Future<bool> directoryExists({required String url}) async {
   return exists;
 }
 
-Map<String, double> getScreenContraints(BuildContext context) {
+Map<String, double> getScreenContraints(context) {
   final double width = MediaQuery.of(context).size.width;
   final double height = MediaQuery.of(context).size.height;
 
   return {"height": height, "width": width};
 }
 
-Future<Response> fetchDataFromInternet(url) async {
+Future<Response> fetchDataFromInternet(String url) async {
   try {
     final res = await http.get(Uri.parse(url));
     return res;

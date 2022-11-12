@@ -29,7 +29,7 @@ class KFTitleBuilder extends StatelessWidget {
                                 ?.originalTitle ??
                             "",
                         style: boldTextStyle(
-                          color: kfPrimaryTextColor,
+                          color: Colors.white,
                           size: 28,
                         ),
                       )

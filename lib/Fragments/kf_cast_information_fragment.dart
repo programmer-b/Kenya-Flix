@@ -58,8 +58,14 @@ class _KFCastInfoFragmentState extends State<KFCastInfoFragment> {
           return const KFContentNotFound();
         }
         return snapWidgetHelper(snapshot,
-                loadingWidget: const CircularProgressIndicator())
-            .center();
+            loadingWidget: Container(
+              color: Colors.black,
+              height: context.height(),
+              width: context.width(),
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            )).center();
       },
     );
   }
