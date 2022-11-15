@@ -33,9 +33,8 @@ class _KFMovieDetailScreenState extends State<KFMovieDetailScreen>
   late ScrollController scrollController;
   late TabController tabController;
 
-  late final String homeUrl = widget.homeUrl;
   late final String url =
-      homeUrl.startsWith('/') ? '$baseUrl$homeUrl' : homeUrl;
+      widget.homeUrl.startsWith('/') ? '$baseUrl${widget.homeUrl}' : widget.homeUrl;
   late final String query = widget.query;
 
   late final String? year = widget.year;

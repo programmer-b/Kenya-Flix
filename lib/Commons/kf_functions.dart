@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart';
 import 'package:kenyaflix/Commons/kf_strings.dart';
@@ -15,6 +16,7 @@ import 'package:kenyaflix/Utils/kf_networking.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../Models/kf_omdb_search_model.dart';
 import '../Models/kf_search_tv_by_id_model.dart';
@@ -369,4 +371,35 @@ Future<Response> fetchDataFromInternet(String url) async {
 Future<FileInfo?> getImageFileFromCache({required String imageKey}) async {
   FileInfo? imageFile = await DefaultCacheManager().getFileFromCache(imageKey);
   return imageFile;
+}
+
+Future<String?> downloadFile(
+    {required String url, required String fileName}) async {
+  final status = await Permission.storage.request();
+
+  if (status.isGranted) {
+    final savedDir = await getCustomPath('movie');
+    return await FlutterDownloader.enqueue(
+        url: url, savedDir: savedDir, fileName: fileName);
+  } else {
+    return null;
+  }
+}
+
+Future<String> getCustomPath(String type) async {
+  Directory rootDir = (await getDownloadsDirectory())!;
+
+  String rootPath = rootDir.path;
+  String path = "$rootPath/$type";
+
+  return (await generateDir(path)).path;
+}
+
+Future<Directory> generateDir(String path) async {
+  if (await Directory(path).exists()) {
+    return Directory(path);
+  } else {
+    final newDir = await Directory(path).create();
+    return newDir;
+  }
 }

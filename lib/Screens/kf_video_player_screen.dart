@@ -53,6 +53,12 @@ class _KFVideoPlayerScreenState extends State<KFVideoPlayerScreen> {
   }
 
   @override
+  void dispose() {
+    _betterPlayerController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {

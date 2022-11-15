@@ -46,14 +46,12 @@ class KFEpisodesInfoList extends StatelessWidget {
       children: [
         for (int index = 0; index < episodesList.length; index++)
           GestureDetector(
-            onTap: () => showDialog(
-                context: context,
-                builder: (context) => KFVideoLoadingComponent(
+            onTap: () => KFVideoLoadingComponent(
                       homeUrl: homeUrl,
                       currentSeason: currentSeason,
                       episodeIndex: index,
                       isMovie: false,
-                    )),
+                    ).launch(context),
             child: Builder(builder: (context) {
               imageUrl =
                   episodesList[index].stillPath ?? value.kfEpisodes?.posterPath;

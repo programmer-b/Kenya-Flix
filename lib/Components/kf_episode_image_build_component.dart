@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:kenyaflix/Commons/kf_strings.dart';
 import 'package:kenyaflix/Components/kf_video_loading_component.dart';
+import 'package:nb_utils/nb_utils.dart';
 
 class KFEpisodeImageBuildComponent extends StatelessWidget {
   const KFEpisodeImageBuildComponent({
@@ -22,15 +23,13 @@ class KFEpisodeImageBuildComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      // onTap: () =>  showDialog(
-      //     context: context,
-      //     builder: (context) => KFVideoLoadingComponent(
-      //           homeUrl: homeUrl,
-      //           currentSeason: currentSeason,
-      //           episodeIndex: index,
-      //           isMovie: false,
-      //         )),
+    return GestureDetector(
+      onTap: () => KFVideoLoadingComponent(
+        homeUrl: homeUrl,
+        currentSeason: currentSeason,
+        episodeIndex: index,
+        isMovie: false,
+      ).launch(context),
       child: Stack(
         children: [
           Container(
