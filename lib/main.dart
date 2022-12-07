@@ -96,7 +96,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-void sendEmail() async {
-
-}

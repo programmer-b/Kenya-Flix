@@ -219,6 +219,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "721098962234-ch09ki1hvhavn58kpu3al37po0a733ck.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dantech.rockflix",
+            "certificate_hash": "fb0cd925438a613b89a8643f6d83f306c68eb146"
+          }
+        },
+        {
           "client_id": "721098962234-0k8234v144pdh67denbr07naqcau50np.apps.googleusercontent.com",
           "client_type": 3
         }
