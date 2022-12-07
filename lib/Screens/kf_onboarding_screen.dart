@@ -4,9 +4,6 @@ import 'package:kenyaflix/Screens/Auth/auth_home_screen.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-import 'Auth/login/view.dart';
-import 'kf_home_screen.dart';
-
 class KFOnboardingScreen extends StatefulWidget {
   const KFOnboardingScreen({super.key});
 
@@ -63,7 +60,7 @@ class _KFOnboardingScreenState extends State<KFOnboardingScreen> {
                     ),
                     InkWell(
                         onTap: () => onboard
-                            ? AuthHomeScreen().launch(context, isNewTask: true)
+                            ? const AuthHomeScreen().launch(context, isNewTask: true)
                             : _controller.nextPage(
                                 duration: 500.milliseconds,
                                 curve: Curves.easeIn),

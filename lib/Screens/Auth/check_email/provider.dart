@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
 
-class Check_emailProvider extends ChangeNotifier {
+class CheckEmailProvider extends ChangeNotifier {
 
 }

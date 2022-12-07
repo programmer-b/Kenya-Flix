@@ -37,7 +37,7 @@ class _KFSplashScreenState extends State<KFSplashScreen> {
   void launchToHomeScreen() {
     Future.delayed(
         Duration.zero,
-        () => AuthHomeScreen().launch(context, isNewTask: true));
+        () => const AuthHomeScreen().launch(context, isNewTask: true));
   }
 
   @override

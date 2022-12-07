@@ -103,7 +103,7 @@ class _KFBuildDetailsActionBarState extends State<KFBuildDetailsActionBar> {
         6.width,
         KFMovieDetailActionButtonBuilder(
             onTap: () => uid == null
-                ? AuthHomeScreen().launch(context)
+                ? const AuthHomeScreen().launch(context)
                 : data == null
                     ? {
                         addToWatchList(query: title),

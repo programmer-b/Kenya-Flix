@@ -14,7 +14,7 @@ class CheckEmailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (BuildContext context) => Check_emailProvider(),
+      create: (BuildContext context) => CheckEmailProvider(),
       builder: (context, child) => _buildPage(context),
     );
   }
@@ -33,12 +33,17 @@ class CheckEmailPage extends StatelessWidget {
     launchMail() => launchURL("https://mail.google.com/mail/u/0/#inbox");
 
     return WillPopScope(
-      onWillPop:() async {
+      onWillPop: () async {
         login();
         return false;
-    },
+      },
       child: Scaffold(
-        appBar: AppBar(backgroundColor: Colors.black, leading: BackButton(onPressed: () => login(),),),
+          appBar: AppBar(
+            backgroundColor: Colors.black,
+            leading: BackButton(
+              onPressed: () => login(),
+            ),
+          ),
           body: Center(
             child: Padding(
               padding: const EdgeInsets.all(20),
