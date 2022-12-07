@@ -5,10 +5,10 @@
 // 'flutter create' template.
 
 // The application's name. By default this is also the title of the Flutter window.
-PRODUCT_NAME = kenyaflix
+PRODUCT_NAME = RockFlix;
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.dantech.kenyaflix
+PRODUCT_BUNDLE_IDENTIFIER = com.dantech.rockflix;
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2022 com.dantech. All rights reserved.

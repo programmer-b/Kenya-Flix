@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -28,10 +25,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -49,9 +43,20 @@ class DefaultFirebaseOptions {
     }
   }
 
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyB0ieflJ_GqpBDxgKSmlUeoY9TAp3kapzo',
+    appId: '1:721098962234:web:6a1755a8bc33aaf3d60c03',
+    messagingSenderId: '721098962234',
+    projectId: 'dantech-solutions',
+    authDomain: 'dantech-solutions.firebaseapp.com',
+    databaseURL: 'https://dantech-solutions-default-rtdb.firebaseio.com',
+    storageBucket: 'dantech-solutions.appspot.com',
+    measurementId: 'G-VK162Y2Q8M',
+  );
+
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDqbuneva9i_tLJu5xCu-ni9wHFBqToW7A',
-    appId: '1:721098962234:android:d401da42f75bfa99d60c03',
+    appId: '1:721098962234:android:269b6e4ef45ecf3cd60c03',
     messagingSenderId: '721098962234',
     projectId: 'dantech-solutions',
     databaseURL: 'https://dantech-solutions-default-rtdb.firebaseio.com',
@@ -60,13 +65,25 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyD7WRJlv_1vQpT1mT-5LMxbL4vK8NmVOj8',
-    appId: '1:721098962234:ios:0dbb60db82380027d60c03',
+    appId: '1:721098962234:ios:a2edbc429ce42c5cd60c03',
     messagingSenderId: '721098962234',
     projectId: 'dantech-solutions',
     databaseURL: 'https://dantech-solutions-default-rtdb.firebaseio.com',
     storageBucket: 'dantech-solutions.appspot.com',
     androidClientId: '721098962234-24kn8ucepcgd9hjn251u4mkn6e2u2jma.apps.googleusercontent.com',
-    iosClientId: '721098962234-874imbtb6t4bg1oj5siebc4063m93gi9.apps.googleusercontent.com',
-    iosBundleId: 'com.dantech.kenyaflix',
+    iosClientId: '721098962234-i4gu81roga9eokrpik5khp91so8u9dbd.apps.googleusercontent.com',
+    iosBundleId: 'com.dantech.rockflix',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyD7WRJlv_1vQpT1mT-5LMxbL4vK8NmVOj8',
+    appId: '1:721098962234:ios:a2edbc429ce42c5cd60c03',
+    messagingSenderId: '721098962234',
+    projectId: 'dantech-solutions',
+    databaseURL: 'https://dantech-solutions-default-rtdb.firebaseio.com',
+    storageBucket: 'dantech-solutions.appspot.com',
+    androidClientId: '721098962234-24kn8ucepcgd9hjn251u4mkn6e2u2jma.apps.googleusercontent.com',
+    iosClientId: '721098962234-i4gu81roga9eokrpik5khp91so8u9dbd.apps.googleusercontent.com',
+    iosBundleId: 'com.dantech.rockflix',
   );
 }

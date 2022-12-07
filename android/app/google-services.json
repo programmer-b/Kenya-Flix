@@ -212,6 +212,42 @@
     },
     {
       "client_info": {
+        "mobilesdk_app_id": "1:721098962234:android:269b6e4ef45ecf3cd60c03",
+        "android_client_info": {
+          "package_name": "com.dantech.rockflix"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "721098962234-0k8234v144pdh67denbr07naqcau50np.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqbuneva9i_tLJu5xCu-ni9wHFBqToW7A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "721098962234-0k8234v144pdh67denbr07naqcau50np.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "721098962234-74tg4dq40lho6mifqpo2r81bj0m9to4g.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.kPesa"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:721098962234:android:e8cf28d81f7ccd9fd60c03",
         "android_client_info": {
           "package_name": "com.doctorpro.doctor_duniya"
