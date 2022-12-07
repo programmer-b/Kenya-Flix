@@ -122,7 +122,7 @@ class _KFImageLogoBuilderState extends State<KFImageLogoBuilder> {
     return FutureBuilder<Map<String, File>?>(
       future: _tasks,
       builder: (context, snapshot) {
-        if (snapshot.data != null && snapshot.loaded) {
+        if (snapshot.data != null && snapshot.ready) {
           final Map<String, File>? data = snapshot.data;
           if (data?.isNotEmpty ?? false) {
             final File? image = data?["image"];

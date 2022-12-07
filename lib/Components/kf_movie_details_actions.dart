@@ -11,10 +11,12 @@ import 'kf_build_details_action_bar.dart';
 import 'kf_common_components.dart';
 
 class KFMovieDetailActions extends StatelessWidget {
-  const KFMovieDetailActions(this.isMovie, {super.key, required this.homeUrl});
+  const KFMovieDetailActions(this.isMovie,
+      {super.key, required this.homeUrl, required this.year});
 
   final bool isMovie;
   final String homeUrl;
+  final String? year;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +38,8 @@ class KFMovieDetailActions extends StatelessWidget {
                             builder: (context) => KFVideoLoadingComponent(
                                   homeUrl: homeUrl,
                                   isMovie: true,
+                                  currentSeason:
+                                      "${value.kfTMDBSearchTVResultsById?.numberOfSeasons}",
                                 ));
                       },
                       style: ElevatedButton.styleFrom(
@@ -51,7 +55,7 @@ class KFMovieDetailActions extends StatelessWidget {
                           ),
                           8.width,
                           Text(
-                            "Watch Now ${isMovie ?"": "S${value.kfTMDBSearchTVResultsById?.numberOfSeasons} E1"}",
+                            "Watch Now ${isMovie ? "" : "S${value.kfTMDBSearchTVResultsById?.numberOfSeasons} E1"}",
                             style: boldTextStyle(color: Colors.black),
                             textAlign: TextAlign.center,
                           ),
@@ -64,7 +68,17 @@ class KFMovieDetailActions extends StatelessWidget {
                     width: width,
                     height: 50,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        await showDialog(
+                            context: context,
+                            builder: (context) => KFVideoLoadingComponent(
+                                  homeUrl: homeUrl,
+                                  isMovie: true,
+                                  isDownloading: true,
+                                  currentSeason:
+                                      "${value.kfTMDBSearchTVResultsById?.numberOfSeasons}",
+                                ));
+                      },
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white30,
                           shape: RoundedRectangleBorder(
@@ -79,7 +93,7 @@ class KFMovieDetailActions extends StatelessWidget {
                           ),
                           12.width,
                           Text(
-                            "Download",
+                            "Download ${isMovie ? "" : "S${value.kfTMDBSearchTVResultsById?.numberOfSeasons} E1"}",
                             style: boldTextStyle(color: Colors.white),
                             textAlign: TextAlign.center,
                           ),
@@ -88,7 +102,11 @@ class KFMovieDetailActions extends StatelessWidget {
                     ),
                   ),
                   16.height,
-                  const KFBuildDetailsActionBar(),
+                  KFBuildDetailsActionBar(
+                      type: isMovie ? 'movie' : 'tv',
+                      year: year,
+                      homeUrl: homeUrl,
+                      id: value.kfTMDBSearchResults?.results?[0].id ?? 0),
                   16.height,
                   _movieDescriptionBar(width, value),
                   8.height,

@@ -18,7 +18,7 @@ class KFImageBuilder extends StatelessWidget {
             ? CachedNetworkImage(
                 key: UniqueKey(),
                 imageUrl:
-                    "$kfOriginalTMDBImageUrl${value.kfTMDBSearchResults?.results?[0]?.backdropPath ?? value.kfTMDBSearchResults?.results?[0]?.posterPath}",
+                    "$kfOriginalTMDBImageUrl${value.kfTMDBSearchResults?.results?[0].backdropPath ?? value.kfTMDBSearchResults?.results?[0].posterPath}",
                 height: height,
                 width: width,
                 fit: BoxFit.cover,

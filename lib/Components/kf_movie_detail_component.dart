@@ -10,9 +10,11 @@ import 'kf_optional_details.dart';
 
 class KFMovieDetailComponent extends StatefulWidget {
   const KFMovieDetailComponent(
-      {super.key, required this.isMovie, required this.homeUrl});
+      {super.key, required this.isMovie, required this.homeUrl, required this.year});
   final bool isMovie;
   final String homeUrl;
+  final String? year;
+
 
   @override
   State<KFMovieDetailComponent> createState() => _KFMovieDetailComponentState();
@@ -35,6 +37,7 @@ class _KFMovieDetailComponentState extends State<KFMovieDetailComponent> {
 
   int get id => kfmovieDetailSecondaryID;
   String get homeUrl => widget.homeUrl;
+  String? get year => widget.year;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +52,7 @@ class _KFMovieDetailComponentState extends State<KFMovieDetailComponent> {
   List<Widget> _delegates(bool isMovie) => [
         const KFImageBuilder(),
         const KFTitleBuilder(),
-        KFMovieDetailActions(isMovie, homeUrl: homeUrl),
+        KFMovieDetailActions(isMovie, homeUrl: homeUrl, year: year,),
         const KFOptionalDetailsBar(),
       ];
 }

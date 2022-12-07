@@ -54,28 +54,39 @@ class KFProvider with ChangeNotifier {
   final List _downloadedTvUrls = <String>[];
   List get downloadedTvUrls => _downloadedTvUrls;
 
+  bool _trailersLoaded = false;
+  bool get trailersLoaded => _trailersLoaded;
+
   /// Future method that will fetch and
   /// stracture popular movies data, get their names in a List and
   /// then search them from the TMDB to get IDs
   /// We will then use this IDs to get the image backdrop
   /// of the particular  movie or tv show
-  Future<void> stracturePopularMoviesAndSeriesData() async {
+  Future<void> stracturePopularMoviesAndSeriesData(
+      {bool isTrailer = false}) async {
+    if(isTrailer){
+      if(trailersLoaded) return;
+      _trailersLoaded = true;
+      notifyListeners();
+    }
     final movies = await fetchMoviesAndSeries(kfPopularMoviesUrl);
     final series = await fetchMoviesAndSeries(kfPopularSeriesUrl);
 
-    await _getPopularData(movies, type: 'movie');
-    await _getPopularData(series, type: 'tv');
+    await _getPopularData(movies, type: 'movie', isTrailer: isTrailer);
+    await _getPopularData(series, type: 'tv', isTrailer: isTrailer);
   }
 
-  Future<void> _getPopularData(String data, {required String type}) async {
-    for (var i = 0; i < 10; i++) {
-      final dbValue = await KFMovieDatabase.instance.readMovie(
+  Future<void> _getPopularData(String data,
+      {required String type, required bool isTrailer}) async {
+    final document = parse(data);
+    var dataCohot = document.getElementsByClassName('dflex')[1].children;
+
+    for (var i = 0; isTrailer ? i < dataCohot.length : i < 10; i++) {
+      log("$i");
+      final dbValue = isTrailer ? null :  await KFMovieDatabase.instance.readMovie(
           type == "movie" ? kfPopularMoviesIDs[i] : kfPopularSeriesIDs[i]);
 
       try {
-        final document = parse(data);
-        var dataCohot = document.getElementsByClassName('dflex')[1].children;
-
         final query = dataCohot[i].getElementsByClassName('mtl')[0].innerHtml;
         final year = dataCohot[i].getElementsByClassName('hd hdy')[0].innerHtml;
         final homeUrl = dataCohot[i]
@@ -84,7 +95,19 @@ class KFProvider with ChangeNotifier {
             .toString();
 
         final element = await fetchTheIDAndPosterFromTMDB(
-            query: query, year: year, type: type);
+            query: query, year: year, type: type, isTrailer: isTrailer);
+        if (isTrailer) {
+          ///fetch trailers diagonally [KFProvider]
+          element.addAll({'homeUrl': homeUrl, 'query': query, 'year' : year});
+          trailers.add(element);
+
+          notifyListeners();
+          if(i == dataCohot.length - 1) {
+            return;
+          } else {
+            continue;
+          }
+        }
 
         final movie = KFMovieModel(
             id: type == "movie" ? kfPopularMoviesIDs[i] : kfPopularSeriesIDs[i],
@@ -121,6 +144,9 @@ class KFProvider with ChangeNotifier {
       }
     }
   }
+
+  final List<Map<String, dynamic>> _trailers = [];
+  List<Map<String, dynamic>> get trailers => _trailers;
 
   ///Here I will decrare a function that will initialize movie details
   ///It will take three parameters and out put various list models carrying
@@ -220,7 +246,7 @@ class KFProvider with ChangeNotifier {
 
     notifyListeners();
 
-    final int? id = _kfTMDBsearchResults?.results?[0]?.id ?? 0;
+    final int id = _kfTMDBsearchResults?.results?[0].id ?? 0;
 
     final isMovie = type == "movie";
     if (isMovie) {

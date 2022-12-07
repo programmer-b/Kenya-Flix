@@ -1,7 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart';
+import 'package:kenyaflix/Commons/kf_keys.dart';
+import 'package:kenyaflix/Screens/Auth/auth_provider.dart';
 
 extension GetConstraits on Map<String, dynamic> {
   double getWidth() {
@@ -67,11 +71,45 @@ extension GetConstraints on Map<String, dynamic> {
 }
 
 extension SnapshotLoaded on AsyncSnapshot {
-  bool get loaded {
+  bool get ready {
     return connectionState == ConnectionState.done;
+  }
+
+  bool get loading {
+    return connectionState == ConnectionState.waiting;
   }
 }
 
 extension ConvertToDocument on String {
   Document get document => parse(this);
+}
+
+extension GetMovieParams on Map<String, String> {
+  String get taskId => this[keyTaskId] ?? "";
+  String get name => this[keyName] ?? "";
+  String get rootImageUrl => this[keyRootImageUrl] ?? "";
+  String get type => this[keyType] ?? "";
+}
+
+extension AuthValidation on String {
+  String? authValidate(AuthProvider pa, {String? password, String? confirmPassword}) {
+    switch (this) {
+      case keyEmail:
+        if (pa.emailError != null) return pa.emailError;
+        break;
+      case keyPassword:
+        if (pa.passwordError != null) return pa.passwordError;
+        break;
+      case keyConfirmPassword:
+        log("PASSWORD: $password");
+        log("CONFIRM PASSWORD: $confirmPassword");
+        if (password != confirmPassword) {
+          return 'Passwords do not match';
+        }
+        break;
+      default:
+        return null;
+    }
+    return null;
+  }
 }

@@ -63,11 +63,35 @@ const kfNextButtonLabel = "Next";
 
 int kfmovieDetailSecondaryID = 101;
 String kfMoviesDetailBaseUrl = "https://ww1.goojara.to";
+String kfMoviesSearchUrl = "https://www.goojara.to/xhrr.php";
+
+const kfGoogleIconImageAsset = "assets/images/icons8-google-480.png";
+const kfYoutubeIconImageAsset = "assets/images/icons8-youtube-480.png";
+
+Map<String, String> searchMoviesHeader = {
+  "Cookie":
+      "aGooz=73jn49bcget1sgjmctl6pkqqkn; d0813dbe=7baddbc1a09caeacce81ac; _555e=CCDD440DAC4E18CF3817A51864146370E99B29F7; 67e2bb18=5606022a16e07a375dd083; _1281=3A8235ECC3D78D818C0AE42734120C2DAD571563; AdskeeperStorage=%7B%220%22%3A%7B%22svspr%22%3A%22https%3A%2F%2Fwww.goojara.to%2FmwOG47%22%2C%22svsds%22%3A1%7D%2C%22C1374985%22%3A%7B%22page%22%3A1%7D%7D; 747a99a6=a06b494648f83745dbfd12; _03db=54659A7E10BAC798D61F9BB1BAECD3FB5DDBAFEB; 6de08a84=0a8454d4353e09387580ea; 0b4c70a3=fec2f2a58ce05fbbd59954",
+  // "Accept-Encoding": "gzip, deflate, br",
+  // "Accept-Language": "en-US,en;q=0.9,sw;q=0.8",
+  // "Content-Length": "6",
+  "Content-Type": "application/x-www-form-urlencoded",
+  // "Origin": "https://www.goojara.to",
+  // "Referer": "http://www.goojara.to/",
+  // "sec-ch-ua":
+  //     "${"Chromium"};v=${"106"},${"Google Chrome"};v=${"106"},${"Not;A=Brand"};v=${"99"}}",
+  // "sec-ch-ua-mobile":"70",
+  // "sec-ch-ua-platform": "Linux",
+  // "sec-fetch-dest": "empty",
+  // "sec-fetch-mode": "cors",
+  // "sec-fetch-site": "same-origin",
+  // "User-Agent":
+  //     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36"
+};
 
 List<int> kfPopularMoviesIDs = List.generate(10, (index) => index + 60);
 List<int> kfPopularSeriesIDs = List.generate(10, (index) => index + 70);
 
-const int kfGenreHorrizontalIMages = 15;
+const int kfGenreHorizontalImages = 15;
 
 const List<Map<String, dynamic>> trendingNowMovies = [
   {

@@ -3,9 +3,10 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:html/parser.dart';
-import 'package:kenyaflix/Commons/kf_keys.dart';
+import 'package:kenyaflix/Components/kf_movie_results.dart';
 import 'package:nb_utils/nb_utils.dart' hide log;
 
+import '../Commons/kf_keys.dart';
 import '../Screens/kf_video_player_screen.dart';
 
 class WebComponent extends StatefulWidget {
@@ -13,11 +14,19 @@ class WebComponent extends StatefulWidget {
       {super.key,
       this.webViewPopupController,
       required this.url,
-      this.supportMultipleWindows = true});
+      this.supportMultipleWindows = true,
+      required this.isDownloading,
+      required this.title,
+      required this.rootImageUrl,
+      required this.type});
 
   final InAppWebViewController? webViewPopupController;
   final String url;
   final bool supportMultipleWindows;
+  final bool isDownloading;
+  final String title;
+  final String rootImageUrl;
+  final String type;
 
   @override
   State<WebComponent> createState() => _WebComponentState();
@@ -25,20 +34,24 @@ class WebComponent extends StatefulWidget {
 
 class _WebComponentState extends State<WebComponent> {
   late String url = widget.url;
+  late bool isDownloading = widget.isDownloading;
+  late String title = widget.title;
+  late String rootImageUrl = widget.rootImageUrl;
+  late String type = widget.type;
 
   bool get webAccessed => getBoolAsync(keyWebAccessed);
   int urlHit = 0;
 
   InAppWebViewController? webViewController;
-  InAppWebViewGroupOptions options() =>
-      InAppWebViewGroupOptions(
-          crossPlatform: InAppWebViewOptions(
-            // useShouldOverrideUrlLoading: false,
-            // mediaPlaybackRequiresUserGesture: false,
-            javaScriptCanOpenWindowsAutomatically: true,
-          ),
-          android: AndroidInAppWebViewOptions(
-              supportMultipleWindows: widget.supportMultipleWindows, useShouldInterceptRequest: true));
+  InAppWebViewGroupOptions options() => InAppWebViewGroupOptions(
+      crossPlatform: InAppWebViewOptions(
+        // useShouldOverrideUrlLoading: false,
+        // mediaPlaybackRequiresUserGesture: false,
+        javaScriptCanOpenWindowsAutomatically: true,
+      ),
+      android: AndroidInAppWebViewOptions(
+          supportMultipleWindows: widget.supportMultipleWindows,
+          useShouldInterceptRequest: true));
 
   final InAppWebViewGroupOptions options2 = InAppWebViewGroupOptions(
       crossPlatform: InAppWebViewOptions(
@@ -63,11 +76,23 @@ class _WebComponentState extends State<WebComponent> {
 
           if (params["usr"] != null && widget.supportMultipleWindows) {
             log("$uri");
-            finish(context);
-            KFVideoPlayerScreen(
-              masterUrl: "$uri",
-            ).launch(context);
-            await setValue(keyWebAccessed, true);
+
+            if(webAccessed){
+              if (isDownloading) {
+                finish(context);
+                KFMovieResults(
+                  masterUrl: "$uri",
+                  title: title,
+                  isDownloading: isDownloading,
+                ).launch(context);
+              } else {
+                finish(context);
+                KFVideoPlayerScreen(
+                  masterUrl: "$uri",
+                ).launch(context);
+              }
+            }
+            // await setValue(keyWebAccessed, true);
           }
 
           return null;
@@ -88,8 +113,7 @@ class _WebComponentState extends State<WebComponent> {
                 controller
                     .loadUrl(
                         urlRequest: URLRequest(url: Uri.parse(masterUrl ?? "")))
-                    .then((value) => controller.setOptions(
-                        options: options()));
+                    .then((value) => controller.setOptions(options: options()));
               }
             }
           }

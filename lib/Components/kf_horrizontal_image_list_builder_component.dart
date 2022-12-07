@@ -37,7 +37,7 @@ class _KFHorrizontalImageListBuilderComponentState
     return Consumer<KFProvider>(
       builder: (context, provider, child) {
         return HorizontalList(
-            itemCount: trending ? args.length : kfGenreHorrizontalIMages,
+            itemCount: trending ? args.length : kfGenreHorizontalImages,
             itemBuilder: (context, index) {
               final imageUrl = args[index]['imageUrl'];
               final homeUrl = args[index]['homeUrl'] ?? "";

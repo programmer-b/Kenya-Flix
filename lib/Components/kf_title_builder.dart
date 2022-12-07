@@ -21,12 +21,12 @@ class KFTitleBuilder extends StatelessWidget {
               children: [
                 value.tmdbSearchResultsLoaded
                     ? Text(
-                        value.kfTMDBSearchResults?.results?[0]?.name ??
+                        value.kfTMDBSearchResults?.results?[0].name ??
                             value.kfTMDBSearchResults?.results?[0]
-                                ?.originalName ??
-                            value.kfTMDBSearchResults?.results?[0]?.title ??
+                                .originalName ??
+                            value.kfTMDBSearchResults?.results?[0].title ??
                             value.kfTMDBSearchResults?.results?[0]
-                                ?.originalTitle ??
+                                .originalTitle ??
                             "",
                         style: boldTextStyle(
                           color: Colors.white,
@@ -51,8 +51,8 @@ class KFTitleBuilder extends StatelessWidget {
         children: [
           RichText(
             text: TextSpan(
-                text: value.kfTMDBSearchResults?.results?[0]?.firstAirDate ??
-                    value.kfTMDBSearchResults?.results?[0]?.releaseDate ??
+                text: value.kfTMDBSearchResults?.results?[0].firstAirDate ??
+                    value.kfTMDBSearchResults?.results?[0].releaseDate ??
                     ""),
           ),
           8.width,

@@ -1,6 +1,6 @@
 class KFTMDBSearchModel {
   int? page;
-  List<dynamic>? results;
+  List<Results>? results;
   int? totalPages;
   int? totalResults;
 

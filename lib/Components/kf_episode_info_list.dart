@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:kenyaflix/Commons/kf_extensions.dart';
 import 'package:kenyaflix/Commons/kf_strings.dart';
 import 'package:kenyaflix/Components/kf_common_components.dart';
-import 'package:kenyaflix/Components/kf_episode_image_build_component.dart';
+import 'package:kenyaflix/Components/kf_image_play.dart';
 import 'package:kenyaflix/Components/kf_video_loading_component.dart';
 import 'package:kenyaflix/Provider/kf_provider.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -34,7 +34,8 @@ class KFEpisodesInfoList extends StatelessWidget {
     });
   }
 
-  Widget _buildEpisodeInfo(double width, KFProvider value, BuildContext context) {
+  Widget _buildEpisodeInfo(
+      double width, KFProvider value, BuildContext context) {
     String? imageUrl = "";
     dynamic runTime = 0;
     int episodeNumber = 0;
@@ -47,11 +48,11 @@ class KFEpisodesInfoList extends StatelessWidget {
         for (int index = 0; index < episodesList.length; index++)
           GestureDetector(
             onTap: () => KFVideoLoadingComponent(
-                      homeUrl: homeUrl,
-                      currentSeason: currentSeason,
-                      episodeIndex: index,
-                      isMovie: false,
-                    ).launch(context),
+              homeUrl: homeUrl,
+              currentSeason: currentSeason,
+              episodeIndex: index,
+              isMovie: false,
+            ).launch(context),
             child: Builder(builder: (context) {
               imageUrl =
                   episodesList[index].stillPath ?? value.kfEpisodes?.posterPath;
@@ -71,13 +72,10 @@ class KFEpisodesInfoList extends StatelessWidget {
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            KFEpisodeImageBuildComponent(
+                            KFImagePlay(
                               width: width * 0.3,
                               height: 90,
                               path: imageUrl,
-                              homeUrl: homeUrl,
-                              index: index,
-                              currentSeason: currentSeason,
                             ),
                             12.width,
                             Column(
@@ -91,7 +89,15 @@ class KFEpisodesInfoList extends StatelessWidget {
                           ],
                         ),
                         IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              KFVideoLoadingComponent(
+                                homeUrl: homeUrl,
+                                currentSeason: currentSeason,
+                                episodeIndex: index,
+                                isMovie: false,
+                                isDownloading: true,
+                              ).launch(context);
+                            },
                             icon: const Icon(
                               Icons.file_download_outlined,
                               color: Colors.white,

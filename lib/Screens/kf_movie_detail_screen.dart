@@ -109,7 +109,7 @@ class _KFMovieDetailScreenState extends State<KFMovieDetailScreen>
                               slivers: <Widget>[
                                 _detailAppBar(),
                                 KFMovieDetailComponent(
-                                    isMovie: type == 'movie', homeUrl: url),
+                                    isMovie: type == 'movie', homeUrl: url, year: year),
                                 if (provider.tmdbSearchVideoLoaded)
                                   _informationAppBar(provider
                                       .kfTMDBSearchTVResultsById

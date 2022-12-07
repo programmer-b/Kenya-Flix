@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kenyaflix/Commons/kf_colors.dart';
+import 'package:kenyaflix/Fragments/kf_search_fragment.dart';
+import 'package:nb_utils/nb_utils.dart';
+
+import '../Screens/account/view.dart';
 
 class KFSliverAppBarComponent extends StatelessWidget {
   const KFSliverAppBarComponent(
@@ -43,9 +47,9 @@ class KFSliverAppBarComponent extends StatelessWidget {
       actions: showTopMenu ?? true
           ? [
               IconButton(
-                  onPressed: () {}, icon: const Icon(Icons.search, size: 37)),
+                  onPressed: () => const KFSearchFragment().launch(context), icon: const Icon(Icons.search, size: 37)),
               IconButton(
-                  onPressed: () {},
+                  onPressed: () => const AccountPage().launch(context),
                   icon: const Icon(
                     Icons.account_circle,
                     size: 37,

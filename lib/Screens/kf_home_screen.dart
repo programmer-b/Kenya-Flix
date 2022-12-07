@@ -1,9 +1,18 @@
+import 'dart:isolate';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:kenyaflix/Commons/kf_colors.dart';
 import 'package:kenyaflix/Fragments/kf_downloads_fragment.dart';
 import 'package:kenyaflix/Fragments/kf_home_fragment.dart';
 import 'package:kenyaflix/Fragments/kf_trailers_and_more_fragment.dart';
+import 'package:kenyaflix/Provider/flutter_downloader_provider.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:provider/provider.dart';
+
+import '../Commons/kf_keys.dart';
+import '../main.dart';
 
 class KFHomeScreen extends StatefulWidget {
   const KFHomeScreen({Key? key}) : super(key: key);
@@ -26,6 +35,19 @@ class _KFHomeScreenState extends State<KFHomeScreen> {
       default:
         return const KFHomeFragment();
     }
+  }
+
+  final ReceivePort _port = ReceivePort();
+
+  @override
+  void initState() {
+    super.initState();
+
+    IsolateNameServer.registerPortWithName(_port.sendPort, keyDownloadReport);
+    _port.listen((dynamic data) {
+      context.read<FlutterDownloaderProvider>().updateData(data);
+    });
+    FlutterDownloader.registerCallback(MyApp.downloadCallback);
   }
 
   @override
@@ -56,7 +78,10 @@ class _KFHomeScreenState extends State<KFHomeScreen> {
           BottomNavigationBarItem(
               tooltip: 'Downloads',
               icon: _selectedIndex == 2
-                  ? const Icon(Icons.file_download_rounded)
+                  ? const Icon(
+                      Icons.file_download_outlined,
+                      color: Colors.white,
+                    )
                   : const Icon(Icons.file_download_outlined),
               label: 'Downloads'),
         ],

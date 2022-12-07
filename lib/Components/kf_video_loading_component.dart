@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:countup/countup.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:kenyaflix/Commons/kf_colors.dart';
 import 'package:kenyaflix/Commons/kf_extensions.dart';
 import 'package:kenyaflix/Commons/kf_functions.dart';
@@ -13,19 +14,23 @@ import 'package:nb_utils/nb_utils.dart' hide log;
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
 
+import '../Commons/kf_keys.dart';
+
 class KFVideoLoadingComponent extends StatefulWidget {
   KFVideoLoadingComponent(
       {required this.homeUrl,
       required this.isMovie,
-      this.currentSeason,
-      this.episodeIndex,
-      this.numberOfSeasons})
+      this.currentSeason = "1",
+      this.episodeIndex = 0,
+      this.numberOfSeasons = 1,
+      this.isDownloading = false})
       : super(key: UniqueKey());
   final String homeUrl;
   final bool isMovie;
   final String? currentSeason;
   final int? episodeIndex;
   final int? numberOfSeasons;
+  final bool isDownloading;
 
   @override
   State<KFVideoLoadingComponent> createState() =>
@@ -38,7 +43,9 @@ class _KFVideoLoadingComponentState extends State<KFVideoLoadingComponent> {
   String get homeUrl => widget.homeUrl;
   bool get isMovie => widget.isMovie;
   String? get currentSeason => widget.currentSeason;
+  int? get numberOfSeasons => widget.numberOfSeasons;
   int? get episodeIndex => widget.episodeIndex;
+  bool get isDownloading => widget.isDownloading;
 
   Future<String> _fetchEpisodeUrl() async {
     log("HOME URL START: $homeUrl");
@@ -68,7 +75,7 @@ class _KFVideoLoadingComponentState extends State<KFVideoLoadingComponent> {
     }
 
     String url = seasonsUrl == ""
-        ? homeUrl
+        ? "$homeUrl?s=$currentSeason"
         : seasonsUrl.startsWith('/')
             ? "$kfMoviesDetailBaseUrl${seasonsUrl.substring(0, seasonsUrl.indexOf("?"))}?s=$currentSeason"
             : "${seasonsUrl.substring(0, seasonsUrl.indexOf("?"))}?s=$currentSeason";
@@ -104,16 +111,27 @@ class _KFVideoLoadingComponentState extends State<KFVideoLoadingComponent> {
   @override
   void initState() {
     super.initState();
+    final isMovie =
+        context.read<KFProvider>().kfTMDBSearchMovieResultsById != null;
     fetchEpisodeUrl = isMovie ? null : _fetchEpisodeUrl();
   }
 
   bool _delayedLoading = false;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  bool get webAccessed => getBoolAsync(keyWebAccessed);
+
   @override
   Widget build(BuildContext context) {
+    log("WEB ACCESSED: $webAccessed");
+
     final provider = Provider.of<KFProvider>(context);
     String? title;
+
+    final String rootImagePath =
+        provider.kfTMDBSearchResults?.results?[0].backdropPath ??
+            provider.kfTMDBSearchResults?.results?[0].posterPath ??
+            "";
 
     bool isTv = provider.kfTMDBSearchTVResultsById != null;
     if (isTv) {
@@ -127,13 +145,92 @@ class _KFVideoLoadingComponentState extends State<KFVideoLoadingComponent> {
           provider.kfTMDBSearchMovieResultsById?.originalTitle ??
           "";
     }
+    if (!webAccessed) {
+      return _configureWeb(title, rootImagePath);
+    }
     return Scaffold(
       key: _scaffoldKey,
-      body: _buidBody(title),
+      body: _buildBody(title, rootImagePath),
     );
   }
 
-  Widget _buidBody(String title) => Builder(builder: (context) {
+  void setWebAccessed() async => await setValue(keyWebAccessed, true);
+
+  Widget _configureWeb(String title, String rootImagePath) => FutureBuilder(
+      future: 40.seconds.delay,
+      builder: (_, snap) {
+        if (snap.ready) {
+          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+            setWebAccessed();
+            finish(context);
+            KFVideoLoadingComponent(
+              homeUrl: homeUrl,
+              isMovie: isMovie,
+              isDownloading: isDownloading,
+              currentSeason: currentSeason,
+              episodeIndex: episodeIndex,
+              numberOfSeasons: numberOfSeasons,
+            ).launch(context);
+          });
+        }
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.black,
+            leading: IconButton(
+              icon: const Icon(
+                Icons.clear,
+                color: white,
+              ),
+              onPressed: () => finish(context),
+            ),
+          ),
+          body: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const SpinKitDualRing(
+                              color: white,
+                            ),
+                            20.width,
+                            Countup(
+                              begin: 0,
+                              end: 100,
+                              duration: 40.seconds,
+                              style: primaryTextStyle(color: white, size: 21),
+                              suffix: '%',
+                              curve: Curves.easeIn,
+                            )
+                          ]),
+                      22.height,
+                      Text(
+                        'Just a moment',
+                        style: boldTextStyle(color: white),
+                      ),
+                      12.height,
+                      Text(
+                        'Please wait while we configure your movie browser.',
+                        style: primaryTextStyle(color: white),
+                        textAlign: TextAlign.center,
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              _web(rootImagePath: rootImagePath, title: title, webAccessed: false)
+            ],
+          ),
+        );
+      });
+
+  Widget _buildBody(String title, String rootImagePath) =>
+      Builder(builder: (context) {
         return Stack(
           children: [
             Padding(
@@ -153,8 +250,10 @@ class _KFVideoLoadingComponentState extends State<KFVideoLoadingComponent> {
                     32.height,
                     Visibility(
                       visible: !_delayedLoading,
-                      child: const Text(
-                        'Loading video...',
+                      child: Text(
+                        isDownloading
+                            ? 'Preparing download ...'
+                            : 'Loading video...',
                       ),
                     ),
                     10.height,
@@ -182,7 +281,7 @@ class _KFVideoLoadingComponentState extends State<KFVideoLoadingComponent> {
                         children: [
                           10.height,
                           Text(
-                            "Loading this video is taking longer than expected. Please try to connect to fatser internet connection or restart the app and try again",
+                            "Loading this video is taking longer than expected. Please try to connect to fast internet connection or restart the app and try again",
                             style: boldTextStyle(color: kfPrimaryTextColor),
                             textAlign: TextAlign.center,
                           ),
@@ -192,8 +291,13 @@ class _KFVideoLoadingComponentState extends State<KFVideoLoadingComponent> {
                               onPressed: () {
                                 finish(context);
                                 KFVideoLoadingComponent(
-                                        homeUrl: homeUrl, isMovie: isMovie)
-                                    .launch(context);
+                                  homeUrl: homeUrl,
+                                  isMovie: isMovie,
+                                  isDownloading: isDownloading,
+                                  currentSeason: currentSeason,
+                                  episodeIndex: episodeIndex,
+                                  numberOfSeasons: numberOfSeasons,
+                                ).launch(context);
                               },
                               child: Text(
                                 "Try Again",
@@ -205,14 +309,17 @@ class _KFVideoLoadingComponentState extends State<KFVideoLoadingComponent> {
                 ),
               ),
             ),
-            isMovie
-                ? _web()
+            fetchEpisodeUrl == null
+                ? _web(rootImagePath: rootImagePath, title: title)
                 : FutureBuilder<String>(
                     future: fetchEpisodeUrl,
                     builder: (context, snapshot) {
-                      if (snapshot.hasData && snapshot.loaded) {
+                      if (snapshot.hasData && snapshot.ready) {
                         final url = snapshot.data ?? "";
-                        return _web(url: url);
+                        return _web(
+                            url: url,
+                            rootImagePath: rootImagePath,
+                            title: title);
                       }
                       return Container();
                     }),
@@ -220,13 +327,23 @@ class _KFVideoLoadingComponentState extends State<KFVideoLoadingComponent> {
         );
       });
 
-  Widget _web({String? url}) => Offstage(
+  Widget _web(
+          {String? url,
+          required String rootImagePath,
+          required String title,
+          bool? webAccessed}) =>
+      Offstage(
         // offstage: false,
         offstage: true,
         child: WebComponent(
             url: url ??
                 (homeUrl.startsWith('/')
                     ? '$kfMoviesDetailBaseUrl$homeUrl'
-                    : homeUrl)),
+                    : homeUrl),
+            rootImageUrl: rootImagePath,
+            title: title,
+            isDownloading: isDownloading,
+            supportMultipleWindows: webAccessed ?? true,
+            type: isMovie ? 'movie' : 'tv'),
       );
 }
