@@ -142,10 +142,15 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  bool _pLogin = false;
+  bool get pLogin => _pLogin;
+
+
   Widget _currentPage = LoginPage();
   Widget get currentPage => _currentPage;
 
-  void switchPage(Widget value) {
+  void switchPage(Widget value, {bool pLogin = false}) {
+    _pLogin = pLogin;
     _currentPage = value;
     notifyListeners();
   }

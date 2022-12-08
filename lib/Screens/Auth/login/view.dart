@@ -116,6 +116,11 @@ class LoginPage extends StatelessWidget {
                           } else if (!auth.success) {
                             loginForm.currentState!.validate();
                           }
+                          if (auth.success) {
+                            if (auth.pLogin) {
+                              const KFHomeScreen().launch(context);
+                            }
+                          }
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -147,6 +152,11 @@ class LoginPage extends StatelessWidget {
                         await auth.googleLogin();
                         if (auth.error) {
                           EasyLoading.showError('Something went wrong.');
+                        }
+                        if (auth.success) {
+                          if (auth.pLogin) {
+                            const KFHomeScreen().launch(context);
+                          }
                         }
                       },
                       style: ElevatedButton.styleFrom(

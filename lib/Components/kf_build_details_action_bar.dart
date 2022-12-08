@@ -103,7 +103,7 @@ class _KFBuildDetailsActionBarState extends State<KFBuildDetailsActionBar> {
         6.width,
         KFMovieDetailActionButtonBuilder(
             onTap: () => uid == null
-                ? const AuthHomeScreen().launch(context)
+                ? const AuthHomeScreen(pLogin: true).launch(context)
                 : data == null
                     ? {
                         addToWatchList(query: title),
@@ -117,6 +117,6 @@ class _KFBuildDetailsActionBarState extends State<KFBuildDetailsActionBar> {
             text: data == null ? "Watchlist" : "Added"),
         6.width,
         KFMovieDetailActionButtonBuilder(
-            onTap: () {}, icon: Icons.more_vert_sharp, text: "More")
+            onTap: () => toast('Coming soon'), icon: Icons.share, text: "More")
       ];
 }

@@ -10,6 +10,7 @@ import '../../../Commons/kf_keys.dart';
 import '../../../Commons/kf_strings.dart';
 import '../../../Components/kf_divider.dart';
 import '../../../Components/kf_text_field.dart';
+import '../../kf_home_screen.dart';
 import 'provider.dart';
 
 class RegisterPage extends StatelessWidget {
@@ -113,7 +114,7 @@ class RegisterPage extends StatelessWidget {
                     ElevatedButton(
                         onPressed: () async {
                           auth.init();
-                          if (registerFormKey.currentState!.validate()){
+                          if (registerFormKey.currentState!.validate()) {
                             await auth.createAccount(
                                 emailAddress: provider.email.trim(),
                                 password: provider.password.trim());
@@ -121,6 +122,11 @@ class RegisterPage extends StatelessWidget {
                               EasyLoading.showError('Something went wrong.');
                             } else if (!auth.success) {
                               registerFormKey.currentState!.validate();
+                            }
+                            if (auth.success) {
+                              if (auth.pLogin) {
+                                const KFHomeScreen().launch(context);
+                              }
                             }
                           }
                         },
@@ -153,6 +159,11 @@ class RegisterPage extends StatelessWidget {
                           await auth.googleLogin();
                           if (auth.error) {
                             EasyLoading.showError('Something went wrong.');
+                          }
+                          if (auth.success) {
+                            if (auth.pLogin) {
+                              const KFHomeScreen().launch(context);
+                            }
                           }
                         },
                         style: ElevatedButton.styleFrom(

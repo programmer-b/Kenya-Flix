@@ -24,6 +24,7 @@ class _AuthHomeScreenState extends State<AuthHomeScreen> {
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snap) {
             if (widget.pLogin ?? false) {
+              provider.switchPage(provider.currentPage, pLogin: true);
               return provider.currentPage;
             } else {
               if (authSkip || snap.hasData) {
