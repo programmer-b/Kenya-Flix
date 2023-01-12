@@ -58,6 +58,9 @@ String kfOMDBSearchMoviesOrSeriesUrl(
 String kfGetCastInformation({required castId}) =>
     "https://api.themoviedb.org/3/person/$castId?api_key=727c59ab265fc8dfe32a7786b0cb2a96";
 
+String grdcookie =
+    "wooz=rfsplpsc5gk9gm9fu6trkrjh7r; utkap=dTIzda; xylay=CMhxBb; zgwtz=tZzCVk; thggn=KpOfGC; wyndr=DVFjZA; adpvd=rdGIeR; iagkh=GdArNS; umoua=LBHszh; khzfv=qjVoDk; pmllv=KSASIc; jsgzq=iFJzXx; kvkvg=cIPEet; thwcz=VMziuv; plxol=LrDZRv; odzca=zpPxyi; kjaaw=bwzeuM; fvwoa=srBfpm; ijlwu=qUvIGM; zcbgq=pxNeGy; aoycv=TWTyzx";
+
 const kfPrevButtonLabel = "Prev";
 const kfNextButtonLabel = "Next";
 

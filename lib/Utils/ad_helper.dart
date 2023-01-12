@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class AdHelper {
+  static String get appOpenAdUnitId => 'ca-app-pub-5988017258715205/7447999199';
   static String get bannerAdUnitId {
     if (Platform.isAndroid) {
       return 'ca-app-pub-5988017258715205/3502596930';

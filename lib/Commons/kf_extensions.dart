@@ -92,7 +92,8 @@ extension GetMovieParams on Map<String, String> {
 }
 
 extension AuthValidation on String {
-  String? authValidate(AuthProvider pa, {String? password, String? confirmPassword}) {
+  String? authValidate(AuthProvider pa,
+      {String? password, String? confirmPassword}) {
     switch (this) {
       case keyEmail:
         if (pa.emailError != null) return pa.emailError;
@@ -112,4 +113,13 @@ extension AuthValidation on String {
     }
     return null;
   }
+}
+
+extension StringExt on String {
+  _aa(wrd) => substring(indexOf(wrd) + 4);
+  get _a => _aa('vd="');
+  get _b => _aa('tk="');
+  get _id => _a.substring(0, _a.indexOf('"'));
+  get _tk => _b.substring(0, _b.indexOf('"'));
+  String get grdurl => 'https://www.wootly.ch/grabd?t=$_tk&id=$_id';
 }

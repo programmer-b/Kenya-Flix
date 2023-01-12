@@ -8,6 +8,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart';
+import 'package:kenyaflix/Commons/kf_extensions.dart';
 import 'package:kenyaflix/Commons/kf_strings.dart';
 import 'package:kenyaflix/Database/kf_movie_database.dart';
 import 'package:kenyaflix/Models/kf_movie_model.dart';
@@ -616,3 +617,39 @@ Future<FileInfo?> getImageFileFromCache({required String imageKey}) async {
 //     return newDir;
 //   }
 // }
+Future<String?> getGrbdurl(String url) async {
+  var body = 'qdf=1';
+  var headers = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'Cookie': grdcookie
+  };
+
+  var response = await http.post(Uri.parse(url), body: body, headers: headers);
+
+  if (response.ok) {
+    // Successful POST request
+    var data = response.body;
+    // log('DATA ${data}');
+    log(data.grdurl);
+    return data;
+  } else {
+    // POST request failed
+    log('Request failed with status: ${response.statusCode}');
+  }
+  return null;
+}
+
+Future<String?> getMasterurl(String url) async {
+  var headers = {
+    'Cookie': grdcookie,
+  };
+  var response = await http.get(Uri.parse(url), headers: headers);
+  log('RESPONSE ${response.body}');
+
+  if (response.ok) {
+    return response.body;
+  } else {
+    log('request failed with status code: ${response.statusCode}');
+  }
+  return null;
+}

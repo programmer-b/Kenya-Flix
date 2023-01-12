@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kenyaflix/Commons/kf_strings.dart';
 import 'package:kenyaflix/Commons/kf_themes.dart';
 import 'package:kenyaflix/Provider/kf_provider.dart';
@@ -21,11 +22,13 @@ import 'package:provider/provider.dart';
 
 import 'Commons/kf_keys.dart';
 import 'Provider/flutter_downloader_provider.dart';
+import 'Utils/ad_helper.dart';
 import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initialize();
+  MobileAds.instance.initialize();
   await FlutterDownloader.initialize(
       debug:
           true, // optional: set to false to disable printing logs to console (default: true)
@@ -45,7 +48,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
+  loadAppOpenAd();
   runApp(const MyApp());
 }
 
@@ -95,4 +98,19 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
+}
+
+AppOpenAd? myAppOpenAd;
+
+loadAppOpenAd() {
+  AppOpenAd.load(
+      adUnitId: AdHelper.appOpenAdUnitId, //Your ad Id from admob
+      request: const AdRequest(),
+      adLoadCallback: AppOpenAdLoadCallback(
+          onAdLoaded: (ad) {
+            myAppOpenAd = ad;
+            myAppOpenAd!.show();
+          },
+          onAdFailedToLoad: (error) {}),
+      orientation: AppOpenAd.orientationPortrait);
 }

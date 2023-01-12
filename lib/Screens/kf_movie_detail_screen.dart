@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kenyaflix/Commons/kf_strings.dart';
 import 'package:kenyaflix/Fragments/kf_error_screen_fragment.dart';
 import 'package:kenyaflix/Components/kf_movie_detail_component.dart';
@@ -10,6 +11,8 @@ import 'package:kenyaflix/Components/kf_sliver_app_bar_component.dart';
 import 'package:kenyaflix/Provider/kf_provider.dart';
 import 'package:nb_utils/nb_utils.dart' hide log;
 import 'package:provider/provider.dart';
+
+import '../Utils/ad_helper.dart';
 
 class KFMovieDetailScreen extends StatefulWidget {
   const KFMovieDetailScreen(
@@ -33,8 +36,9 @@ class _KFMovieDetailScreenState extends State<KFMovieDetailScreen>
   late ScrollController scrollController;
   late TabController tabController;
 
-  late final String url =
-      widget.homeUrl.startsWith('/') ? '$baseUrl${widget.homeUrl}' : widget.homeUrl;
+  late final String url = widget.homeUrl.startsWith('/')
+      ? '$baseUrl${widget.homeUrl}'
+      : widget.homeUrl;
   late final String query = widget.query;
 
   late final String? year = widget.year;
@@ -67,7 +71,7 @@ class _KFMovieDetailScreenState extends State<KFMovieDetailScreen>
     tabController.addListener(() => setState(() {}));
 
     await _initializeDetails();
-
+    _createBannerAd();
     Future.delayed(
         Duration.zero, () => context.read<KFProvider>().initMovieDetails());
   }
@@ -77,6 +81,17 @@ class _KFMovieDetailScreenState extends State<KFMovieDetailScreen>
     super.dispose();
     scrollController.dispose();
     tabController.dispose();
+  }
+
+  BannerAd? _bannerAd;
+
+  void _createBannerAd() {
+    _bannerAd = BannerAd(
+        size: AdSize.fullBanner,
+        adUnitId: AdHelper.bannerAdUnitId,
+        listener: AdHelper.bannerListener,
+        request: const AdRequest())
+      ..load();
   }
 
   @override
@@ -98,6 +113,10 @@ class _KFMovieDetailScreenState extends State<KFMovieDetailScreen>
           : provider.notFound
               ? KFMovieNotFoundComponent(url: url)
               : Scaffold(
+                  bottomNavigationBar: Container(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      height: 52,
+                      child: AdWidget(ad: _bannerAd!)),
                   backgroundColor: Colors.black,
                   body: FutureBuilder<bool>(
                       future: isNetworkAvailable(),
@@ -109,7 +128,9 @@ class _KFMovieDetailScreenState extends State<KFMovieDetailScreen>
                               slivers: <Widget>[
                                 _detailAppBar(),
                                 KFMovieDetailComponent(
-                                    isMovie: type == 'movie', homeUrl: url, year: year),
+                                    isMovie: type == 'movie',
+                                    homeUrl: url,
+                                    year: year),
                                 if (provider.tmdbSearchVideoLoaded)
                                   _informationAppBar(provider
                                       .kfTMDBSearchTVResultsById
@@ -117,8 +138,10 @@ class _KFMovieDetailScreenState extends State<KFMovieDetailScreen>
                                       .toString()),
                                 if (provider.tmdbSearchVideoLoaded)
                                   KFMovieInformationBuilder(
-                                      isMovie: type == 'movie',
-                                      controller: tabController, homeUrl: url,)
+                                    isMovie: type == 'movie',
+                                    controller: tabController,
+                                    homeUrl: url,
+                                  )
                               ],
                             );
                           }
