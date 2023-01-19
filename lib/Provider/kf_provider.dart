@@ -135,9 +135,10 @@ class KFProvider with ChangeNotifier {
                 : await KFMovieDatabase.instance.update(movie);
       } catch (e) {
         if (dbValue == null) {
-          setError(true);
-          log("set error because popular $type at index $i failed to download",
-              error: "ERROR $e");
+           continue;
+          // setError(true);
+          // log("set error because popular $type at index $i failed to download",
+          //     error: "ERROR $e");
         } else {
           continue;
         }
